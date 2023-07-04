@@ -1,0 +1,3 @@
+--exam addition, deletion is in 'exam' app.(for admin only)
+--course addition, deletion and user registration, login, admin registration, login are set in 'user' app(for admin only)
+--course overview, buying api for users are set in 'regularuserview' app
