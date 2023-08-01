@@ -4,7 +4,7 @@ from .views import (FieldOfStudyListCreateView, FieldOfStudyRetrieveUpdateDestro
                     SubjectsRetrieveUpdateDestroyView, ModulesListCreateView,ModulesRetrieveUpdateDestroyView, 
                     AccessTypeListCreateView,AccessTypeRetrieveUpdateDestroyView,ExamsNestedView, ExamsNestedRetrieveUpdateDestroyView,
                     videosNestedView, VideosNestedRetrieveUpdateDestroyView, NotesNestedView, NotesNestedRetrieveUpdateDestroyView, PopularCourseRetrieveUpdateDestroyview,
-                    PopularCoursesAdd, SliderImageRetrieveUpdateDestroyView, SliderImageAdd)
+                    PopularCoursesAdd, SliderImageRetrieveUpdateDestroyView, SliderImageAdd, AssignCourses, AssignExam, ViewAllUsers, ViewUserDetial)
 from exam.views import (NumericalsListCreateView, NumericalsRetrieveUpdateDestroyView, MultipleChoiceListCreateView, MultipleChoiceRetrieveUpdateDestroyView,
                         MultiSelectListCreateView, MultiSelectRetrieveUpdateDestroyView, OptionsListCreateView, OptionsRetrieveUpdateDestroyView)
                         
@@ -48,6 +48,10 @@ urlpatterns = [
     path('sliderimageadd/<int:images_id>', SliderImageRetrieveUpdateDestroyView.as_view(), name='sliderimageadd'),
     path('popularcourseadd/', PopularCoursesAdd.as_view(), name='popularcourseadd'),
     path('popularcourseadd/<int:popular_course_id>', PopularCourseRetrieveUpdateDestroyview.as_view(), name='popularcourseadd'),
+    path('assigncourse/', AssignCourses.as_view(), name='assigncourse'),
+    path('assignexam/', AssignExam.as_view(), name='assignexam'),
+    path('viewallusers/', ViewAllUsers.as_view(), name='viewallusers'),
+    path('viewallusers/<str:username>/', ViewUserDetial.as_view(), name='viewuserdetail')
 
 ]
 

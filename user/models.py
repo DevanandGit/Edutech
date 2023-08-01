@@ -133,7 +133,7 @@ class NotesNested(models.Model):
     access_type = models.ForeignKey(Access_type, on_delete=models.CASCADE)
     title = models.CharField(max_length=200) #To store the title of note,
     description = models.TextField(max_length=600, blank=True) #To store the description of notes 
-    pdf_link = models.URLField(max_length=250)
+    pdf = models.FileField(upload_to='pdfs/')
     created_date = models.DateTimeField(auto_now_add=True, blank=True)
     updated_date =  models.DateTimeField(auto_now=True, blank=True)
     slug_notes = models.SlugField(blank=True, null=True)

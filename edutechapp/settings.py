@@ -9,23 +9,24 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
-
+import os
 from pathlib import Path
-
+from dotenv import load_dotenv
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+load_dotenv()
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-6vz0^e5+s%)czci7@8n9*fcti6^pe77jf&yr2(3pxcj(p)7$jz'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ["154.62.108.108"]
 
 
 # Application definition
@@ -82,13 +83,14 @@ WSGI_APPLICATION = 'edutechapp.wsgi.application'
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'railway',
-#         'USER': 'postgres',
-#         'PASSWORD': 'Krh35ZnvogrmTHUi9jY6',
-#         'HOST': 'containers-us-west-70.railway.app',
-#         'PORT': '6973',
+#         'NAME': 'edutech',
+#         'USER': 'edutechadmin',
+#         'PASSWORD': 'Devanandadmin@29',
+#         'HOST': '154.62.108.108', #IP of vps.can be changed to local host after django hosted on vps.
+#         'PORT': '', #default port which postgres listening for connection is 5432.
 #     }
 # }
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -130,7 +132,7 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
-import os
+
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 MEDIA_URL = 'media/'

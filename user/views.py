@@ -3,15 +3,17 @@ from django.contrib.sessions.models import Session
 from django.utils import timezone
 from .models import (Access_type,
                     FieldOfStudy, Subjects, Modules,
-                     videosNested, NotesNested)
+                     videosNested, NotesNested, RegularUserModel)
 from .serializers import (RegularUserSerializer,RegularUserLoginSerializer,
                         AdminLoginSerializer, AdminRegistrationSerializer,
                         Access_type_serializer,FieldOfStudySerializer,
                         ModuleSerializer,SubjectSerializer,
                         VideoNestedSerializer, NotesNestedSerializer)
-
+from regularuserview.models import UserProfile, PurchasedDate
+from regularuserview.serializer import DurationSerializer
 from rest_framework.authtoken.models import Token
-from rest_framework.generics import CreateAPIView, ListCreateAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework.generics import (CreateAPIView, ListCreateAPIView, RetrieveUpdateDestroyAPIView,
+                                     ListAPIView,RetrieveUpdateDestroyAPIView)
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
@@ -264,3 +266,91 @@ class PopularCourseRetrieveUpdateDestroyview(RetrieveUpdateDestroyAPIView):
     queryset = PopularCourses.objects.all()
     lookup_field = "popular_course_id"
     
+#view to assign a exam to a user.
+class AssignExam(APIView):
+    permission_classes = [IsAdminUser]
+    def post(self, request):
+        #get exam id and username of the user.
+        username = request.data.get('username')
+        exam = request.data.get('exam_unique_id')
+        
+        #get associated user and exam
+        try:
+            exam = Exam.objects.get(exam_unique_id = exam)
+            user = RegularUserModel.objects.get(username = username)
+        except RegularUserModel.DoesNotExist:
+            return Response("User not found", status=status.HTTP_404_NOT_FOUND)
+        except Exam.DoesNotExist:
+            return Response("Exam not found", status=status.HTTP_404_NOT_FOUND)
+                
+        #get the validity of the purchase.
+        duration_serializer = DurationSerializer(data=request.data)
+        if not duration_serializer.is_valid():
+            return Response(duration_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+        #calculation of dates.
+        duration_in_months = duration_serializer.validated_data['duration']
+        date_of_purchase = timezone.now()
+        expiration_date = date_of_purchase + timezone.timedelta(days=30 * duration_in_months)
+
+        user_profile, created = UserProfile.objects.get_or_create(user = user)
+        user_profile.purchased_exams.add(exam)
+
+        purchased_date = PurchasedDate.objects.create(user_profile=user_profile,
+                                                      exam = exam, 
+                                                        date_of_purchase=timezone.now(),
+                                                        expiration_date = expiration_date)
+        purchased_date.save()
+
+        return Response("Exam purchased successfully", status=status.HTTP_200_OK)
+
+#view to assign a course to a user.
+class AssignCourses(APIView):
+    permission_classes = [IsAdminUser]
+    def post(self, request):
+        #get coures_id and username of the user.
+        username = request.data.get('username')
+        course_id = request.data.get('course_unique_id')
+        
+        #get associated user and course.
+        try:
+            course = FieldOfStudy.objects.get(course_unique_id = course_id)
+            
+            user = RegularUserModel.objects.get(username = username)
+        
+        except RegularUserModel.DoesNotExist:
+            return Response("User not found", status=status.HTTP_404_NOT_FOUND)
+        except FieldOfStudy.DoesNotExist:
+            return Response("Course not found", status=status.HTTP_404_NOT_FOUND)
+                
+        #get the validity of the purchase.
+        duration_serializer = DurationSerializer(data=request.data)
+        if not duration_serializer.is_valid():
+            return Response(duration_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+        #calculation of dates.
+        duration_in_months = duration_serializer.validated_data['duration']
+        date_of_purchase = timezone.now()
+        expiration_date = date_of_purchase + timezone.timedelta(days=30 * duration_in_months)
+
+        user_profile, created = UserProfile.objects.get_or_create(user = user)
+        user_profile.purchased_courses.add(course)
+
+        purchased_date = PurchasedDate.objects.create(user_profile=user_profile, 
+                                                      course = course,
+                                                        date_of_purchase=timezone.now(),
+                                                        expiration_date = expiration_date)
+
+        return Response("Course purchased successfully", status=status.HTTP_200_OK)
+
+        
+class ViewAllUsers(ListAPIView):
+    permission_classes = [IsAdminUser]
+    serializer_class = RegularUserSerializer
+    queryset = RegularUserModel.objects.all()
+
+class ViewUserDetial(RetrieveUpdateDestroyAPIView):
+    permission_classes = [IsAdminUser]
+    serializer_class = RegularUserSerializer
+    queryset = RegularUserModel
+    lookup_field = 'username'

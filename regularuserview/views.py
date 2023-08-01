@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from rest_framework.generics import ListAPIView, RetrieveAPIView
+from rest_framework.generics import CreateAPIView,ListAPIView, RetrieveAPIView,ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.views import APIView
 from user.models import (FieldOfStudy, Subjects,
                          Modules,RegularUserModel,
@@ -119,139 +119,100 @@ class ExamRetrieveView(RetrieveAPIView):
     queryset = Exam.objects.filter(is_active = True)
     lookup_field = 'exam_unique_id'
 
-# Buy Exam
-# import datetime
-# class BuyExam(APIView):
-#     authentication_classes = [TokenAuthentication]
-#     permission_classes = [IsAuthenticated]
-#     def post(self, request, exam_unique_id):
-#         try:
-#             course = Exam.objects.get(exam_unique_id= exam_unique_id)
-#             print(course)
-#         except Exam.DoesNotExist:
-#             return Response("Exam not found", status=status.HTTP_404_NOT_FOUND)
-#         print(request.user)
-#         user_profile, created = UserProfile.objects.get_or_create(user=request.user)
-#         user_profile.purchased_exams.add(course)
-#         user_profile.purchased_date = timezone.now()
-#         # date = datetime.datetime.now()
-#         user_profile.save()
-#         return Response("Exam purchased successfully", status=status.HTTP_200_OK)
-
-# Buy Course
-
-# class BuyCourse(APIView):
-#     authentication_classes = [TokenAuthentication]
-#     permission_classes = [IsAuthenticated]
-#     def post(self, request, course_unique_id):
-#         try:
-#             course = FieldOfStudy.objects.get(course_unique_id = course_unique_id)
-#             print(course)
-#         except FieldOfStudy.DoesNotExist:
-#             return Response("Course not found", status=status.HTTP_404_NOT_FOUND)
-#         print(request.user)
-#         user_profile, created = UserProfile.objects.get_or_create(user=request.user)
-#         print(user_profile)
-#         user_profile.purchased_courses.add(course)
-#         user_profile.save()
-#         return Response("Course purchased successfully", status=status.HTTP_200_OK)
 class BuyExam(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
+
     def post(self, request, exam_unique_id):
         try:
-            exam = Exam.objects.get(exam_unique_id= exam_unique_id)
-            print(exam)
+            exam = Exam.objects.get(exam_unique_id=exam_unique_id)
         except Exam.DoesNotExist:
             return Response("Exam not found", status=status.HTTP_404_NOT_FOUND)
-        #Serializer to validate the validity of the exam.
+
+        # Serializer to validate the validity of the exam.
         duration_serializer = DurationSerializer(data=request.data)
         if not duration_serializer.is_valid():
             return Response(duration_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        
-        duration_in_months = duration_serializer.validated_data['duration']
-        print(request.user)
-        user_profile, created = UserProfile.objects.get_or_create(user=request.user)
-        user_profile.purchased_exams.add(exam)
 
-        
+        duration_in_months = duration_serializer.validated_data['duration']
+        user_profile, created = UserProfile.objects.get_or_create(user=request.user)
+
         date_of_purchase = timezone.now()
         expiration_date = date_of_purchase + timezone.timedelta(days=30 * duration_in_months)
 
         user_profile.purchased_exams.add(exam)
+
         purchased_date = PurchasedDate.objects.create(user_profile=user_profile, 
-                                                        date_of_purchase=timezone.now(),
-                                                        expiration_date = expiration_date)
-        purchased_date.save()
+                                                      exam=exam,
+                                                      date_of_purchase=date_of_purchase,
+                                                      expiration_date=expiration_date)
         return Response("Exam purchased successfully", status=status.HTTP_200_OK)
 
 class BuyCourse(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
+
     def post(self, request, course_unique_id):
         try:
-            course = FieldOfStudy.objects.get(course_unique_id = course_unique_id)
-            print(course)
+            course = FieldOfStudy.objects.get(course_unique_id=course_unique_id)
         except FieldOfStudy.DoesNotExist:
             return Response("Course not found", status=status.HTTP_404_NOT_FOUND)
-        print(request.user)
-        #Serializer to validate the validity of the course.
-        duration_serializer = DurationSerializer(data=request.data)
-        if not duration_serializer.is_valid():
-            return Response(duration_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        
-        duration_in_months = duration_serializer.validated_data['duration']
+
+        duration = int(request.data.get('duration'))
 
         user_profile, created = UserProfile.objects.get_or_create(user=request.user)
-        
-        date_of_purchase = timezone.now()
-        expiration_date = date_of_purchase + timezone.timedelta(days=30 * duration_in_months)
-            
-        user_profile.purchased_courses.add(course)
-        purchased_date = PurchasedDate.objects.create(user_profile=user_profile, 
-                                                        date_of_purchase=timezone.now(),
-                                                        expiration_date = expiration_date)
-        print(purchased_date)
-        purchased_date.save()
-            
-        return Response("Course purchased successfully", status=status.HTTP_200_OK)
 
+        date_of_purchase = timezone.now()
+        expiration_date = date_of_purchase + timezone.timedelta(days=30 * duration)
+
+        user_profile.purchased_courses.add(course)
+
+        purchased_date = PurchasedDate.objects.create(user_profile=user_profile,
+                                                      course=course,
+                                                      date_of_purchase=date_of_purchase,
+                                                      expiration_date=expiration_date)
+
+        return Response("Course purchased successfully", status=status.HTTP_200_OK)
+#view to add ExamResponse of User.
 class UserExamResponseAdd(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
-    serializer_class = UserResponseSerializer
+    
     def post(self, request):
+        user = request.user
         serializer = UserResponseSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+        validated_data = serializer.validated_data
+        exam_id = validated_data.get('exam_id')
+        response_data = validated_data.get('response')
+        marks_scored = validated_data.get('marks_scored', '00')
+        
         try:
-            user_response, created = UserResponse.objects.get_or_create(
-                userprofile=request.user
+            user_response = UserResponse.objects.create(
+                user=user,
+                exam_id=exam_id,
+                response=response_data,
+                marks_scored=marks_scored,
             )
+
+            response = {
+                "message": "User response added successfully",
+                'data': {
+                    'exam_id': exam_id,
+                    'response': response_data,
+                    'marks_scored': marks_scored,
+                },
+                'status': status.HTTP_201_CREATED
+            }
+            return Response(response, status=status.HTTP_201_CREATED)
+
         except:
             return Response("User not found", status=status.HTTP_401_UNAUTHORIZED)
-
-        # Update the UserResponse object with exam_id, response, and marks_scored
-        user_response.exam_id = serializer.validated_data['exam_id']
-        user_response.response = serializer.validated_data['response']
-        user_response.marks_scored = serializer.validated_data.get('marks_scored', '00')  # Default '00' if not provided
-        user_response.save()
-        response = {
-            "message": "User response added successfully",
-            'data': UserResponseSerializer(user_response).data,
-            'status':status.HTTP_201_CREATED
-
-        }
-        return Response(response)
-
-# class Userlist(ListAPIView):
-#     serializer_class = RegularUserSerializer
-#     queryset = RegularUserModel.objects.all()
-    
 
 #User Profile View.
 class UserProfileView(RetrieveAPIView):
     permission_classes = [IsAuthenticated]
-    # authentication_classes = [TokenAuthentication]
+    authentication_classes = [TokenAuthentication]
     serializer_class = RegularUserSerializer
     lookup_field = 'username'
     def get_queryset(self):

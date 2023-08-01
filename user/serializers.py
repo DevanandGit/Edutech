@@ -12,36 +12,48 @@ RegularUserModel = get_user_model()
 #validate data of regular user Registration.
 class RegularUserSerializer(serializers.ModelSerializer):
     password = serializers.RegexField(
-            regex=r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$",
-            max_length=128,
-            min_length=8,
-            write_only=True,
-            error_messages={
-                'invalid': 'Password must contain at least 8 characters, including uppercase, lowercase, and numeric characters.'
-            }   
-        )
+        regex=r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$",
+        max_length=128,
+        min_length=8,
+        write_only=True,
+        error_messages={
+            'invalid': 'Password must contain at least 8 characters, including uppercase, lowercase, and numeric characters.'
+        }
+    )
     confirm_password = serializers.CharField(write_only=True)
-    purchase_list = UserProfileSerializer(source='user', read_only =True)
-    exam_response = UserResponseSerializer(source= 'userresponse', read_only = True)
+
+    purchase_list = UserProfileSerializer(source='user_profile', read_only=True)  # Update the source here
+
+    exam_response = UserResponseSerializer(read_only=True)
+
     class Meta:
         model = RegularUserModel
-        fields = ['id','name', 'username', 'phone_number', 'password', 'confirm_password','date_joined','last_login','is_active','purchase_list','exam_response']
+        fields = ['id', 'name', 'username', 'phone_number', 'password', 'confirm_password', 'date_joined', 'last_login', 'is_active', 'purchase_list', 'exam_response']
         default_related_name = 'regular_users'
+
+    def to_representation(self, instance):
+        # Include the logged-in user's exam responses in the representation
+        representation = super().to_representation(instance)
+        user_responses = instance.userresponse.all()
+        exam_response_serializer = UserResponseSerializer(user_responses, many=True)
+        representation['exam_response'] = exam_response_serializer.data
+        return representation
 
     def validate(self, data):
         if data['password'] != data['confirm_password']:
             raise serializers.ValidationError('Password mismatch')
         return data
-        
+
     def create(self, validated_data):
         validated_data.pop('confirm_password')
         user = RegularUserModel.objects.create_user(
-            name = validated_data['name'],
-            username = validated_data['username'],
-            phone_number = validated_data['phone_number'],
-            password = validated_data['password']
-            )
+            name=validated_data['name'],
+            username=validated_data['username'],
+            phone_number=validated_data['phone_number'],
+            password=validated_data['password']
+        )
         return user
+
 
 #validate data of regular user login.
 class RegularUserLoginSerializer(serializers.Serializer):
