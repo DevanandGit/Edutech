@@ -108,7 +108,7 @@ class AdminLoginSerializer(serializers.Serializer):
 class NotesNestedSerializer(serializers.ModelSerializer):
     class Meta:
         model = NotesNested
-        fields = ['notes_id','module','access_type','title','description','pdf_link','created_date','updated_date','slug_notes','is_active']
+        fields = ['notes_id','module','access_type','title','description','pdf','created_date','updated_date','slug_notes','is_active']
 
 #validates Videos nested inside Modules.
 class VideoNestedSerializer(serializers.ModelSerializer):
