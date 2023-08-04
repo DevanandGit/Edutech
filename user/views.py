@@ -268,7 +268,7 @@ class PopularCourseRetrieveUpdateDestroyview(RetrieveUpdateDestroyAPIView):
     
 #view to assign a exam to a user.
 class AssignExam(APIView):
-    permission_classes = [IsAdminUser]
+    # permission_classes = [IsAdminUser]
     def post(self, request):
         #get exam id and username of the user.
         username = request.data.get('username')
@@ -283,15 +283,10 @@ class AssignExam(APIView):
         except Exam.DoesNotExist:
             return Response("Exam not found", status=status.HTTP_404_NOT_FOUND)
                 
-        #get the validity of the purchase.
-        duration_serializer = DurationSerializer(data=request.data)
-        if not duration_serializer.is_valid():
-            return Response(duration_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        duration = int(request.data.get('duration')) #duration in days
         
-        #calculation of dates.
-        duration_in_months = duration_serializer.validated_data['duration']
         date_of_purchase = timezone.now()
-        expiration_date = date_of_purchase + timezone.timedelta(days=30 * duration_in_months)
+        expiration_date = date_of_purchase + timezone.timedelta(days=duration)
 
         user_profile, created = UserProfile.objects.get_or_create(user = user)
         user_profile.purchased_exams.add(exam)
@@ -306,7 +301,7 @@ class AssignExam(APIView):
 
 #view to assign a course to a user.
 class AssignCourses(APIView):
-    permission_classes = [IsAdminUser]
+    # permission_classes = [IsAdminUser]
     def post(self, request):
         #get coures_id and username of the user.
         username = request.data.get('username')
@@ -323,15 +318,10 @@ class AssignCourses(APIView):
         except FieldOfStudy.DoesNotExist:
             return Response("Course not found", status=status.HTTP_404_NOT_FOUND)
                 
-        #get the validity of the purchase.
-        duration_serializer = DurationSerializer(data=request.data)
-        if not duration_serializer.is_valid():
-            return Response(duration_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        duration = int(request.data.get('duration')) #duration in days
         
-        #calculation of dates.
-        duration_in_months = duration_serializer.validated_data['duration']
         date_of_purchase = timezone.now()
-        expiration_date = date_of_purchase + timezone.timedelta(days=30 * duration_in_months)
+        expiration_date = date_of_purchase + timezone.timedelta(days=duration)
 
         user_profile, created = UserProfile.objects.get_or_create(user = user)
         user_profile.purchased_courses.add(course)
