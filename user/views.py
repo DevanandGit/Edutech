@@ -289,7 +289,10 @@ class PopularCourseRetrieveUpdateDestroyview(RetrieveUpdateDestroyAPIView):
     
 #view to assign a exam to a user.
 class AssignExam(APIView):
+<<<<<<< HEAD
     authentication_classes = [TokenAuthentication]
+=======
+>>>>>>> 705b66a956e91823f6846867ec1e7c2ec8317784
     permission_classes = [IsAdminUser]
     def post(self, request):
         #get exam id and username of the user.
@@ -323,7 +326,10 @@ class AssignExam(APIView):
 
 #view to assign a course to a user.
 class AssignCourses(APIView):
+<<<<<<< HEAD
     authentication_classes = [TokenAuthentication]
+=======
+>>>>>>> 705b66a956e91823f6846867ec1e7c2ec8317784
     permission_classes = [IsAdminUser]
     def post(self, request):
         #get coures_id and username of the user.
