@@ -130,6 +130,10 @@ class BuyExam(APIView):
             return Response("Exam not found", status=status.HTTP_404_NOT_FOUND)
 
         duration = int(request.data.get('duration')) #duration in days
+<<<<<<< HEAD
+=======
+        
+>>>>>>> origin
         user_profile, created = UserProfile.objects.get_or_create(user=request.user)
 
         date_of_purchase = timezone.now()
@@ -153,7 +157,7 @@ class BuyCourse(APIView):
         except FieldOfStudy.DoesNotExist:
             return Response("Course not found", status=status.HTTP_404_NOT_FOUND)
 
-        duration = int(request.data.get('duration'))
+        duration = int(request.data.get('duration')) #duration in days
 
         user_profile, created = UserProfile.objects.get_or_create(user=request.user)
 

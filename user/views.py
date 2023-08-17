@@ -11,12 +11,15 @@ from .serializers import (RegularUserSerializer,RegularUserLoginSerializer,
                         VideoNestedSerializer, NotesNestedSerializer)
 from regularuserview.models import UserProfile, PurchasedDate
 from regularuserview.serializer import DurationSerializer
+from .models import PopularCourses
+from .serializers import PopularCourseSerializer
 from rest_framework.authtoken.models import Token
 from rest_framework.generics import (CreateAPIView, ListCreateAPIView, RetrieveUpdateDestroyAPIView,
                                      ListAPIView,RetrieveUpdateDestroyAPIView)
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAdminUser
 from rest_framework import status
 
@@ -90,7 +93,8 @@ class AdminLoginView(APIView):
         user = authenticate(request, username = serializer.data['username'], password = serializer.data['password'])
         if user is not None and user.is_superuser:
             login(request, user)
-            response = {'message': 'Login Successful',}
+            token, created = Token.objects.get_or_create(user=user)
+            response = {'message': 'Login Successful','token': token.key}
             return Response(response)
         return Response('The username or password is incorrect')
 
@@ -101,6 +105,7 @@ class AdminLogoutView(APIView):
     permission_classes = [IsAuthenticated]
     def post(self, request):
         if request.user.is_superuser:
+            Token.objects.filter(user=request.user).delete()
             logout(request)
             response = {'message': 'You have been successfully logged out.'}
             return Response(response)
@@ -122,24 +127,28 @@ class AdminLogoutView(APIView):
 
 #create access type- (paid, free) view.
 class AccessTypeListCreateView(ListCreateAPIView):
+    authentication_classes = [TokenAuthentication]
     permission_classes = [IsAdminUser]
     queryset = Access_type.objects.all()
     serializer_class = Access_type_serializer
 
 #AccessTypeDetailView
 class AccessTypeRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
+    authentication_classes = [TokenAuthentication]
     permission_classes = [IsAdminUser]
     queryset = Access_type.objects.all()
     serializer_class = Access_type_serializer
 
 #Course Overview view.
 class FieldOfStudyListCreateView(ListCreateAPIView):
+    authentication_classes = [TokenAuthentication]
     permission_classes = [IsAdminUser]
     queryset = FieldOfStudy.objects.prefetch_related('subjects')
     serializer_class = FieldOfStudySerializer
 
 #Course Detailview.
 class FieldOfStudyRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
+    authentication_classes = [TokenAuthentication]
     permission_classes = [IsAdminUser]
     queryset = FieldOfStudy.objects.all()
     serializer_class = FieldOfStudySerializer
@@ -147,6 +156,7 @@ class FieldOfStudyRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
 
 #Subjects overview view.
 class SubjectsListCreateView(ListCreateAPIView):
+    authentication_classes = [TokenAuthentication]
     permission_classes = [IsAdminUser]
     serializer_class = SubjectSerializer
     lookup_field = "course_unique_id"
@@ -158,6 +168,7 @@ class SubjectsListCreateView(ListCreateAPIView):
 
 #Subjects Detailview View.
 class SubjectsRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
+    authentication_classes = [TokenAuthentication]
     permission_classes = [IsAdminUser]
     queryset = Subjects.objects.all()
     serializer_class = SubjectSerializer
@@ -165,6 +176,7 @@ class SubjectsRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
 
 #Modules OverView View.
 class ModulesListCreateView(ListCreateAPIView):
+    authentication_classes = [TokenAuthentication]
     permission_classes = [IsAdminUser]
     serializer_class = ModuleSerializer
     lookup_field = "subject_id"
@@ -176,6 +188,7 @@ class ModulesListCreateView(ListCreateAPIView):
 
 #Modules Detailview view.
 class ModulesRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
+    authentication_classes = [TokenAuthentication]
     permission_classes = [IsAdminUser]
     queryset = Modules.objects.all()
     serializer_class = ModuleSerializer
@@ -185,6 +198,7 @@ from exam.serializer import ExamSerializer
 from exam.models import Exam
 #list and write exams
 class ExamsNestedView(ListCreateAPIView):
+    authentication_classes = [TokenAuthentication]
     permisson_classes = [IsAdminUser]
     serializer_class = ExamSerializer
     lookup_field = "modules_id"
@@ -196,6 +210,7 @@ class ExamsNestedView(ListCreateAPIView):
 
 #Exams inside Modules Detailview
 class ExamsNestedRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
+    authentication_classes = [TokenAuthentication]
     permission_classes = [IsAdminUser]
     queryset = Exam.objects.all()
     serializer_class = ExamSerializer
@@ -203,6 +218,7 @@ class ExamsNestedRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
 
 #list and write videos
 class videosNestedView(ListCreateAPIView):
+    authentication_classes = [TokenAuthentication]
     permisson_classes = [IsAdminUser]
     serializer_class = VideoNestedSerializer
     lookup_field = "modules_id"
@@ -214,6 +230,7 @@ class videosNestedView(ListCreateAPIView):
 
 #Videos inside Modules Detailview
 class VideosNestedRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
+    authentication_classes = [TokenAuthentication]
     permission_classes = [IsAdminUser]
     queryset = videosNested.objects.all()
     serializer_class = VideoNestedSerializer
@@ -221,6 +238,7 @@ class VideosNestedRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
 
 #list and write notes
 class NotesNestedView(ListCreateAPIView):
+    authentication_classes = [TokenAuthentication]
     permisson_classes = [IsAdminUser]
     serializer_class = NotesNestedSerializer
     lookup_field = "modules_id"
@@ -232,6 +250,7 @@ class NotesNestedView(ListCreateAPIView):
 
 #Videos inside Modules Detailview
 class NotesNestedRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
+    authentication_classes = [TokenAuthentication]
     permission_classes = [IsAdminUser]
     queryset = NotesNested.objects.all()
     serializer_class = NotesNestedSerializer
@@ -241,26 +260,28 @@ from .models import SliderImage
 from .serializers import SliderImageSerializer
 
 class SliderImageAdd(ListCreateAPIView):
+    authentication_classes = [TokenAuthentication]
     permission_classes = [IsAdminUser]
     serializer_class = SliderImageSerializer
     queryset = SliderImage.objects.all()
     
     
 class SliderImageRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
+    authentication_classes = [TokenAuthentication]
     permission_classes = [IsAdminUser]
     serializer_class = SliderImageSerializer
     queryset = SliderImage.objects.all()
     lookup_field = "images_id"
 
-from .models import PopularCourses
-from .serializers import PopularCourseSerializer
 
 class PopularCoursesAdd(ListCreateAPIView):
+    authentication_classes = [TokenAuthentication]
     permission_classes = [IsAdminUser]
     queryset = PopularCourses.objects.all()
     serializer_class = PopularCourseSerializer
 
 class PopularCourseRetrieveUpdateDestroyview(RetrieveUpdateDestroyAPIView):
+    authentication_classes = [TokenAuthentication]
     permission_classes = [IsAdminUser]
     serializer_class = PopularCourseSerializer
     queryset = PopularCourses.objects.all()
@@ -268,6 +289,10 @@ class PopularCourseRetrieveUpdateDestroyview(RetrieveUpdateDestroyAPIView):
     
 #view to assign a exam to a user.
 class AssignExam(APIView):
+<<<<<<< HEAD
+    authentication_classes = [TokenAuthentication]
+=======
+>>>>>>> 705b66a956e91823f6846867ec1e7c2ec8317784
     permission_classes = [IsAdminUser]
     def post(self, request):
         #get exam id and username of the user.
@@ -282,8 +307,13 @@ class AssignExam(APIView):
             return Response("User not found", status=status.HTTP_404_NOT_FOUND)
         except Exam.DoesNotExist:
             return Response("Exam not found", status=status.HTTP_404_NOT_FOUND)
+<<<<<<< HEAD
 
         duration = int(request.data.get('duration')) #duration in days        
+=======
+                
+        duration = int(request.data.get('duration')) #duration in days
+>>>>>>> origin
         
         date_of_purchase = timezone.now()
         expiration_date = date_of_purchase + timezone.timedelta(days=duration)
@@ -301,6 +331,10 @@ class AssignExam(APIView):
 
 #view to assign a course to a user.
 class AssignCourses(APIView):
+<<<<<<< HEAD
+    authentication_classes = [TokenAuthentication]
+=======
+>>>>>>> 705b66a956e91823f6846867ec1e7c2ec8317784
     permission_classes = [IsAdminUser]
     def post(self, request):
         #get coures_id and username of the user.
@@ -317,8 +351,14 @@ class AssignCourses(APIView):
             return Response("User not found", status=status.HTTP_404_NOT_FOUND)
         except FieldOfStudy.DoesNotExist:
             return Response("Course not found", status=status.HTTP_404_NOT_FOUND)
+<<<<<<< HEAD
    
         duration = int(request.data.get('duration')) #duration in days
+=======
+                
+        duration = int(request.data.get('duration')) #duration in days
+        
+>>>>>>> origin
         date_of_purchase = timezone.now()
         expiration_date = date_of_purchase + timezone.timedelta(days=duration)
 
@@ -334,11 +374,13 @@ class AssignCourses(APIView):
 
         
 class ViewAllUsers(ListAPIView):
+    authentication_classes = [TokenAuthentication]
     permission_classes = [IsAdminUser]
     serializer_class = RegularUserSerializer
     queryset = RegularUserModel.objects.all()
 
 class ViewUserDetial(RetrieveUpdateDestroyAPIView):
+    authentication_classes = [TokenAuthentication]
     permission_classes = [IsAdminUser]
     serializer_class = RegularUserSerializer
     queryset = RegularUserModel
