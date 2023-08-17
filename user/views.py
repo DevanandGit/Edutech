@@ -282,16 +282,11 @@ class AssignExam(APIView):
             return Response("User not found", status=status.HTTP_404_NOT_FOUND)
         except Exam.DoesNotExist:
             return Response("Exam not found", status=status.HTTP_404_NOT_FOUND)
-                
-        #get the validity of the purchase.
-        duration_serializer = DurationSerializer(data=request.data)
-        if not duration_serializer.is_valid():
-            return Response(duration_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        duration = int(request.data.get('duration')) #duration in days        
         
-        #calculation of dates.
-        duration_in_months = duration_serializer.validated_data['duration']
         date_of_purchase = timezone.now()
-        expiration_date = date_of_purchase + timezone.timedelta(days=30 * duration_in_months)
+        expiration_date = date_of_purchase + timezone.timedelta(days=duration)
 
         user_profile, created = UserProfile.objects.get_or_create(user = user)
         user_profile.purchased_exams.add(exam)
@@ -322,16 +317,10 @@ class AssignCourses(APIView):
             return Response("User not found", status=status.HTTP_404_NOT_FOUND)
         except FieldOfStudy.DoesNotExist:
             return Response("Course not found", status=status.HTTP_404_NOT_FOUND)
-                
-        #get the validity of the purchase.
-        duration_serializer = DurationSerializer(data=request.data)
-        if not duration_serializer.is_valid():
-            return Response(duration_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        
-        #calculation of dates.
-        duration_in_months = duration_serializer.validated_data['duration']
+   
+        duration = int(request.data.get('duration')) #duration in days
         date_of_purchase = timezone.now()
-        expiration_date = date_of_purchase + timezone.timedelta(days=30 * duration_in_months)
+        expiration_date = date_of_purchase + timezone.timedelta(days=duration)
 
         user_profile, created = UserProfile.objects.get_or_create(user = user)
         user_profile.purchased_courses.add(course)

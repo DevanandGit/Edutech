@@ -129,16 +129,11 @@ class BuyExam(APIView):
         except Exam.DoesNotExist:
             return Response("Exam not found", status=status.HTTP_404_NOT_FOUND)
 
-        # Serializer to validate the validity of the exam.
-        duration_serializer = DurationSerializer(data=request.data)
-        if not duration_serializer.is_valid():
-            return Response(duration_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-        duration_in_months = duration_serializer.validated_data['duration']
+        duration = int(request.data.get('duration')) #duration in days
         user_profile, created = UserProfile.objects.get_or_create(user=request.user)
 
         date_of_purchase = timezone.now()
-        expiration_date = date_of_purchase + timezone.timedelta(days=30 * duration_in_months)
+        expiration_date = date_of_purchase + timezone.timedelta(days=duration)
 
         user_profile.purchased_exams.add(exam)
 
@@ -163,7 +158,7 @@ class BuyCourse(APIView):
         user_profile, created = UserProfile.objects.get_or_create(user=request.user)
 
         date_of_purchase = timezone.now()
-        expiration_date = date_of_purchase + timezone.timedelta(days=30 * duration)
+        expiration_date = date_of_purchase + timezone.timedelta(days=duration)
 
         user_profile.purchased_courses.add(course)
 

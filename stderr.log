@@ -1,0 +1,222 @@
+Not Found: /edu/
+Internal Server Error: /edu/admin/login/
+Traceback (most recent call last):
+  File "/usr/local/lsws/Edutech/html/lib/python3.10/site-packages/django/db/backends/base/base.py", line 289, in ensure_connection
+    self.connect()
+  File "/usr/local/lsws/Edutech/html/lib/python3.10/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+  File "/usr/local/lsws/Edutech/html/lib/python3.10/site-packages/django/db/backends/base/base.py", line 270, in connect
+    self.connection = self.get_new_connection(conn_params)
+  File "/usr/local/lsws/Edutech/html/lib/python3.10/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+  File "/usr/local/lsws/Edutech/html/lib/python3.10/site-packages/django/db/backends/postgresql/base.py", line 275, in get_new_connection
+    connection = self.Database.connect(**conn_params)
+  File "/usr/local/lsws/Edutech/html/lib/python3.10/site-packages/psycopg2/__init__.py", line 122, in connect
+    conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+psycopg2.OperationalError: connection to server at "154.62.108.108", port 5432 failed: Connection refused
+	Is the server running on that host and accepting TCP/IP connections?
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/usr/local/lsws/Edutech/html/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/usr/local/lsws/Edutech/html/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/usr/local/lsws/Edutech/html/lib/python3.10/site-packages/django/utils/decorators.py", line 46, in _wrapper
+    return bound_method(*args, **kwargs)
+  File "/usr/local/lsws/Edutech/html/lib/python3.10/site-packages/django/views/decorators/cache.py", line 62, in _wrapper_view_func
+    response = view_func(request, *args, **kwargs)
+  File "/usr/local/lsws/Edutech/html/lib/python3.10/site-packages/django/contrib/admin/sites.py", line 441, in login
+    return LoginView.as_view(**defaults)(request)
+  File "/usr/local/lsws/Edutech/html/lib/python3.10/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/usr/local/lsws/Edutech/html/lib/python3.10/site-packages/django/utils/decorators.py", line 46, in _wrapper
+    return bound_method(*args, **kwargs)
+  File "/usr/local/lsws/Edutech/html/lib/python3.10/site-packages/django/views/decorators/debug.py", line 92, in sensitive_post_parameters_wrapper
+    return view(request, *args, **kwargs)
+  File "/usr/local/lsws/Edutech/html/lib/python3.10/site-packages/django/utils/decorators.py", line 46, in _wrapper
+    return bound_method(*args, **kwargs)
+  File "/usr/local/lsws/Edutech/html/lib/python3.10/site-packages/django/utils/decorators.py", line 134, in _wrapper_view
+    response = view_func(request, *args, **kwargs)
+  File "/usr/local/lsws/Edutech/html/lib/python3.10/site-packages/django/utils/decorators.py", line 46, in _wrapper
+    return bound_method(*args, **kwargs)
+  File "/usr/local/lsws/Edutech/html/lib/python3.10/site-packages/django/views/decorators/cache.py", line 62, in _wrapper_view_func
+    response = view_func(request, *args, **kwargs)
+  File "/usr/local/lsws/Edutech/html/lib/python3.10/site-packages/django/contrib/auth/views.py", line 90, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+  File "/usr/local/lsws/Edutech/html/lib/python3.10/site-packages/django/views/generic/base.py", line 143, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/usr/local/lsws/Edutech/html/lib/python3.10/site-packages/django/views/generic/edit.py", line 152, in post
+    if form.is_valid():
+  File "/usr/local/lsws/Edutech/html/lib/python3.10/site-packages/django/forms/forms.py", line 201, in is_valid
+    return self.is_bound and not self.errors
+  File "/usr/local/lsws/Edutech/html/lib/python3.10/site-packages/django/forms/forms.py", line 196, in errors
+    self.full_clean()
+  File "/usr/local/lsws/Edutech/html/lib/python3.10/site-packages/django/forms/forms.py", line 434, in full_clean
+    self._clean_form()
+  File "/usr/local/lsws/Edutech/html/lib/python3.10/site-packages/django/forms/forms.py", line 455, in _clean_form
+    cleaned_data = self.clean()
+  File "/usr/local/lsws/Edutech/html/lib/python3.10/site-packages/django/contrib/auth/forms.py", line 242, in clean
+    self.user_cache = authenticate(
+  File "/usr/local/lsws/Edutech/html/lib/python3.10/site-packages/django/views/decorators/debug.py", line 42, in sensitive_variables_wrapper
+    return func(*func_args, **func_kwargs)
+  File "/usr/local/lsws/Edutech/html/lib/python3.10/site-packages/django/contrib/auth/__init__.py", line 77, in authenticate
+    user = backend.authenticate(request, **credentials)
+  File "/usr/local/lsws/Edutech/html/lib/python3.10/site-packages/django/contrib/auth/backends.py", line 46, in authenticate
+    user = UserModel._default_manager.get_by_natural_key(username)
+  File "/usr/local/lsws/Edutech/html/lib/python3.10/site-packages/django/contrib/auth/base_user.py", line 54, in get_by_natural_key
+    return self.get(**{self.model.USERNAME_FIELD: username})
+  File "/usr/local/lsws/Edutech/html/lib/python3.10/site-packages/django/db/models/manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/usr/local/lsws/Edutech/html/lib/python3.10/site-packages/django/db/models/query.py", line 633, in get
+    num = len(clone)
+  File "/usr/local/lsws/Edutech/html/lib/python3.10/site-packages/django/db/models/query.py", line 380, in __len__
+    self._fetch_all()
+  File "/usr/local/lsws/Edutech/html/lib/python3.10/site-packages/django/db/models/query.py", line 1881, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+  File "/usr/local/lsws/Edutech/html/lib/python3.10/site-packages/django/db/models/query.py", line 91, in __iter__
+    results = compiler.execute_sql(
+  File "/usr/local/lsws/Edutech/html/lib/python3.10/site-packages/django/db/models/sql/compiler.py", line 1560, in execute_sql
+    cursor = self.connection.cursor()
+  File "/usr/local/lsws/Edutech/html/lib/python3.10/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+  File "/usr/local/lsws/Edutech/html/lib/python3.10/site-packages/django/db/backends/base/base.py", line 330, in cursor
+    return self._cursor()
+  File "/usr/local/lsws/Edutech/html/lib/python3.10/site-packages/django/db/backends/base/base.py", line 306, in _cursor
+    self.ensure_connection()
+  File "/usr/local/lsws/Edutech/html/lib/python3.10/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+  File "/usr/local/lsws/Edutech/html/lib/python3.10/site-packages/django/db/backends/base/base.py", line 288, in ensure_connection
+    with self.wrap_database_errors:
+  File "/usr/local/lsws/Edutech/html/lib/python3.10/site-packages/django/db/utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "/usr/local/lsws/Edutech/html/lib/python3.10/site-packages/django/db/backends/base/base.py", line 289, in ensure_connection
+    self.connect()
+  File "/usr/local/lsws/Edutech/html/lib/python3.10/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+  File "/usr/local/lsws/Edutech/html/lib/python3.10/site-packages/django/db/backends/base/base.py", line 270, in connect
+    self.connection = self.get_new_connection(conn_params)
+  File "/usr/local/lsws/Edutech/html/lib/python3.10/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+  File "/usr/local/lsws/Edutech/html/lib/python3.10/site-packages/django/db/backends/postgresql/base.py", line 275, in get_new_connection
+    connection = self.Database.connect(**conn_params)
+  File "/usr/local/lsws/Edutech/html/lib/python3.10/site-packages/psycopg2/__init__.py", line 122, in connect
+    conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+django.db.utils.OperationalError: connection to server at "154.62.108.108", port 5432 failed: Connection refused
+	Is the server running on that host and accepting TCP/IP connections?
+
+Not Found: /edu/
+Not Found: /edu/
+Not Found: /edu/users/
+Method Not Allowed: /edu/users/login/
+Not Found: /edu/
+Not Found: /edu/users/admin
+Method Not Allowed: /edu/users/adminregistration/
+Method Not Allowed: /edu/users/adminlogin/
+Not Found: /edu/users/
+Method Not Allowed: /edu/users/adminregistration/
+Method Not Allowed: /edu/users/logout/
+24f61ad2f945eef50fbe3d0da08ba22a6f58acdf
+8c6a67c35bd34cbc6c7b868d5d0a5d03f270d1c3
+2023-08-05 18:36:08.055250 [UID:65534][40214] packetLen < 0
+2023-08-05 18:36:15.912113 [UID:65534][40214] packetLen < 0
+2023-08-05 18:36:29.254616 [UID:65534][40214] packetLen < 0
+2023-08-05 18:36:42.963061 [UID:65534][40214] packetLen < 0
+2023-08-05 18:37:07.031434 [UID:65534][40214] packetLen < 0
+2023-08-05 18:37:41.377041 [UID:65534][40224] packetLen < 0
+2023-08-05 18:38:26.921489 [UID:65534][40218] packetLen < 0
+2023-08-05 18:39:20.459109 [UID:65534][40218] packetLen < 0
+2023-08-05 18:39:52.156794 [UID:65534][40214] packetLen < 0
+2023-08-05 18:40:27.354476 [UID:65534][40263] packetLen < 0
+2023-08-05 18:52:41.223718 [UID:65534][40324] packetLen < 0
+2023-08-05 18:57:08.230583 [UID:65534][40350] packetLen < 0
+2023-08-05 19:00:16.060935 [UID:65534][40347] packetLen < 0
+2023-08-06 04:57:55.632557 [UID:65534][44526] packetLen < 0
+2023-08-06 04:58:37.808433 [UID:65534][44526] packetLen < 0
+2023-08-06 05:00:24.333300 [UID:65534][44526] packetLen < 0
+2023-08-06 05:00:50.227351 [UID:65534][44526] packetLen < 0
+2023-08-06 05:00:59.863438 [UID:65534][44526] packetLen < 0
+2023-08-06 05:01:12.867707 [UID:65534][44526] packetLen < 0
+2023-08-06 05:01:23.720595 [UID:65534][44526] packetLen < 0
+2023-08-06 05:02:39.068333 [UID:65534][44693] packetLen < 0
+2023-08-06 05:04:08.712441 [UID:65534][44526] packetLen < 0
+2023-08-06 05:04:17.809096 [UID:65534][44693] packetLen < 0
+2023-08-06 05:09:00.198397 [UID:65534][44693] packetLen < 0
+2023-08-06 09:24:21.501858 [UID:65534][46043] packetLen < 0
+835bf8db8cd3215d5766afa4322963fdf944d458
+2023-08-06 11:55:45.433585 [UID:65534][47100] packetLen < 0
+909b55ed6e5caa6654fb0da7b7bb9e63211c7ddd
+b6e7177567a66c1978c1d1b882e5a308b12ca678
+2023-08-06 12:12:11.472873 [UID:65534][47223] packetLen < 0
+2023-08-06 12:19:53.452910 [UID:65534][47223] packetLen < 0
+2023-08-06 12:20:42.065818 [UID:65534][47221] packetLen < 0
+86c447b66d9b2e36d8c1d34e1d45a272a75a90c5
+2023-08-06 13:13:46.503683 [UID:65534][47537] packetLen < 0
+2023-08-06 13:14:08.983011 [UID:65534][47520] packetLen < 0
+1427bf3cc676a51f3935f02f8092f5175404baf5
+2023-08-06 14:42:25.697064 [UID:65534][48000] packetLen < 0
+2023-08-06 14:43:46.726685 [UID:65534][48009] packetLen < 0
+2023-08-06 14:56:42.005509 [UID:65534][48095] packetLen < 0
+2023-08-06 15:22:00.506434 [UID:65534][48229] packetLen < 0
+2023-08-06 15:22:50.109071 [UID:65534][48234] packetLen < 0
+2023-08-06 15:23:00.794877 [UID:65534][48234] packetLen < 0
+2023-08-06 15:55:00.478281 [UID:65534][48405] packetLen < 0
+2023-08-06 15:55:55.054284 [UID:65534][48391] packetLen < 0
+2023-08-06 15:56:25.686642 [UID:65534][48423] packetLen < 0
+2023-08-06 16:37:22.473981 [UID:65534][48668] packetLen < 0
+Not Found: /mathlab/
+Method Not Allowed: /mathlab/users/userRegistration/
+Method Not Allowed: /mathlab/users/userRegistration/
+Not Found: /
+Not Found: /
+Not Found: /favicon.ico
+Not Found: /
+Not Found: /
+Not Found: /
+Not Found: /favicon.ico
+Not Found: /
+Not Found: /robots.txt
+Not Found: /
+a95ab390b1cfded4bbb9f58ccfa1882e8e500bb4
+eb6929d3405e4fa9b9460012374226f5da036dc6
+99dddb76b26af9fee6d5251b4618f8da42de1279
+b7be7e484f5c457eaebbad6227f2cd72cfe3fedb
+01584abc35290e23988047ea4f8c896f926af279
+b92f57b1a0e96d0c823714f9d4ebf16ca75ed30b
+2023-08-10 18:37:30.329927 [UID:65534][136249] packetLen < 0
+2023-08-11 05:11:26.943335 [UID:65534][155522] packetLen < 0
+2023-08-11 05:37:20.722486 [UID:65534][156436] packetLen < 0
+2023-08-11 05:37:45.661752 [UID:65534][156436] packetLen < 0
+2023-08-11 05:44:00.249745 [UID:65534][156695] packetLen < 0
+2023-08-11 05:47:43.200506 [UID:65534][156695] packetLen < 0
+2023-08-11 05:49:36.524032 [UID:65534][156695] packetLen < 0
+2023-08-11 05:52:36.786289 [UID:65534][156948] packetLen < 0
+5c0795de96c515e5a40ab9b42dcea7fad13e0041
+b6d2cf6b79127b2c0589b450bcd833088bcdfff4
+c55b2c86b9016b5d952dcddf153a48519c749803
+41e4828c0840fc3cbd99c6f2072bb5379034a74d
+eb350307f340ce0ec6f36b05ee998c9a5e2d924d
+21b94b7acb4d402d7f7b1c79bcfce07c7565788d
+0584d7f084cd75ce23533f78ce4920fa5c3cdd74
+5e4f973b4ab8b0c9838efe39564561c6b971d834
+3268321a7e7fbb7e86adbfe6d1304f920d47b493
+9bd95584caf57237bd0fc42f512ebedc50ff91a0
+2a29e8b56b4b088fd67b47ee4d0e526d9a61d1c2
+475d5e4b02a9eec2fd5f1cd3cfc11dab4ce84d68
+d90ac5845890f44df44bb48d51e271d5a64b4767
+2023-08-14 21:48:06.956331 [UID:65534][33662] packetLen < 0
+dd2079701007e011afacf8e394f83658b883cc83
+4f2354b816b667d4b020b1e2938b28e24a230b91
+2d920cc29a9880833fcd3fe3620af1e21b695f68
+6dfcec3d98975c70a40a27af413ba3660d87f89f
+5312ffb8342d28c29bf9cc0f81cb9cf683a1f2cf
+bc99d92bfa0da1adb319984fc0eed6164094b91d
+ee1821af364f373c07bef9ca479cf6765a7011ea
+12fe7f3bbcda1be3e3d696edb2f27fb4ce38aa0c
+0e55c7fca99d88ed59606612934a7a492ca8765f
+d02324a838b57f8ae8c5e52bdd18b219d6adb542
+866fff635f619151289ab57c75a7a99221efcb69
+fc1afa85e4f9a5376b828d0f4c65e0230b4357b2
+f4e80536d8f7581e8cd8b4bdf53c59f7f8aa1b5a
