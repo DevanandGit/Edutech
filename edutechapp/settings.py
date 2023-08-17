@@ -26,7 +26,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -81,15 +81,15 @@ WSGI_APPLICATION = 'edutechapp.wsgi.application'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 # DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'edutech',
-#         'USER': 'edutechadmin',
-#         'PASSWORD': 'Devanandadmin@29',
-#         'HOST': '154.62.108.108', #IP of vps.can be changed to local host after django hosted on vps.
-#         'PORT': '', #default port which postgres listening for connection is 5432.
-#     }
-# }
+#      'default': {
+#          'ENGINE': 'django.db.backends.postgresql',
+#          'NAME': 'mathlab',
+#          'USER': 'mathlabadmin',
+#          'PASSWORD': 'mathlabResearch@29',
+#          'HOST': '154.62.108.108', #IP of vps.can be changed to local host after django hosted on vps.
+#          'PORT': '5432', #default port which postgres listening for connection is 5432.
+#      }
+#  }
 
 DATABASES = {
     'default': {
@@ -132,11 +132,10 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
-
 STATIC_URL = 'static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
+STATIC_ROOT = '/usr/local/lsws/Edutech/html/Edutech/public/static'
 MEDIA_URL = 'media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+MEDIA_ROOT = '/usr/local/lsws/Edutech/html/Edutech/public/media'
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
