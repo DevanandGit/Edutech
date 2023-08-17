@@ -304,8 +304,13 @@ class AssignExam(APIView):
             return Response("User not found", status=status.HTTP_404_NOT_FOUND)
         except Exam.DoesNotExist:
             return Response("Exam not found", status=status.HTTP_404_NOT_FOUND)
+<<<<<<< HEAD
+
+        duration = int(request.data.get('duration')) #duration in days        
+=======
                 
         duration = int(request.data.get('duration')) #duration in days
+>>>>>>> origin
         
         date_of_purchase = timezone.now()
         expiration_date = date_of_purchase + timezone.timedelta(days=duration)
@@ -340,9 +345,14 @@ class AssignCourses(APIView):
             return Response("User not found", status=status.HTTP_404_NOT_FOUND)
         except FieldOfStudy.DoesNotExist:
             return Response("Course not found", status=status.HTTP_404_NOT_FOUND)
+<<<<<<< HEAD
+   
+        duration = int(request.data.get('duration')) #duration in days
+=======
                 
         duration = int(request.data.get('duration')) #duration in days
         
+>>>>>>> origin
         date_of_purchase = timezone.now()
         expiration_date = date_of_purchase + timezone.timedelta(days=duration)
 
