@@ -101,8 +101,8 @@ class Modules(models.Model):
     module_name = models.CharField(max_length=400)
     slug_modules = models.SlugField(blank=True, null=True)
     is_active = models.BooleanField(default=True, help_text="Make Sure to Set Active-state while creating.")
-    created_date = models.DateTimeField(auto_now_add=True, blank=True)
-    updated_date =  models.DateTimeField(auto_now=True, blank=True)
+    created_date = models.DateTimeField( blank=True)
+    updated_date =  models.DateTimeField(blank=True)
 
     #Customised manager object.
     # objects = ActiveFieldManager()
@@ -134,9 +134,9 @@ class NotesNested(models.Model):
     title = models.CharField(max_length=200) #To store the title of note,
     description = models.TextField(max_length=600, blank=True) #To store the description of notes 
     pdf = models.FileField(upload_to='pdfs/')
-    created_date = models.DateTimeField(auto_now_add=True, blank=True)
-    updated_date =  models.DateTimeField(auto_now=True, blank=True)
-    slug_notes = models.SlugField(blank=True, null=True)
+    created_date = models.DateTimeField( blank=True)
+    updated_date =  models.DateTimeField( blank=True)
+    slug_notes = models.SlugField(blank=True, null=True, max_length=200)
     is_active = models.BooleanField(default=True, help_text="Make Sure to Set Active-state while creating.")
     
     #Customised manager object
@@ -154,11 +154,11 @@ class videosNested(models.Model):
     video_unique_id = models.AutoField(primary_key=True, unique=True)
     module = models.ForeignKey(Modules, on_delete=models.CASCADE, related_name="videos") #Modules = parent of  video.
     access_type = models.ForeignKey(Access_type, on_delete=models.CASCADE)
-    video_id = models.CharField(max_length=50) 
+    video_id = models.CharField(max_length=50, null = True) 
     title = models.CharField(max_length=200) #To store the title video
     description = models.TextField(max_length=600, blank=True) #To store the description of video
-    created_date = models.DateTimeField(auto_now_add=True)
-    updated_date =  models.DateTimeField(auto_now=True)
+    created_date = models.DateTimeField()
+    updated_date =  models.DateTimeField()
     slug_videos = models.SlugField(blank=True, null=True)
     is_active = models.BooleanField(default=True, help_text="Make Sure to Set Active-state while creating.")
     

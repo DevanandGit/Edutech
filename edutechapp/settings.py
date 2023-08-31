@@ -26,7 +26,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["mathlabtech.com", "www.mathlabtech.com"]
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'exam.apps.ExamConfig',
     'regularuserview.apps.RegularuserviewConfig',
+    'django_rest_passwordreset',
 
 ]
 
@@ -61,7 +62,7 @@ ROOT_URLCONF = 'edutechapp.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR, 'templates/',],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -80,23 +81,23 @@ WSGI_APPLICATION = 'edutechapp.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-DATABASES = {
-     'default': {
-         'ENGINE': 'django.db.backends.postgresql',
-         'NAME': 'mathlab',
-         'USER': 'mathlabadmin',
-         'PASSWORD': 'mathlabResearch@29',
-         'HOST': '154.62.108.108', #IP of vps.can be changed to local host after django hosted on vps.
-         'PORT': '5432', #default port which postgres listening for connection is 5432.
-     }
- }
+# DATABASES = {
+#      'default': {
+#          'ENGINE': 'django.db.backends.postgresql',
+#          'NAME': 'mathlab',
+#          'USER': 'mathlabadmin',
+#          'PASSWORD': 'mathlabResearch@29',
+#          'HOST': '154.62.108.108', #IP of vps.can be changed to local host after django hosted on vps.
+#          'PORT': '5432', #default port which postgres listening for connection is 5432.
+#      }
+#  }
 
-#DATABASES = {
-    #'default': {
-   #     'ENGINE': 'django.db.backends.sqlite3',
-  #      'NAME': BASE_DIR / 'db.sqlite3',
- #   }
-#}
+DATABASES = {
+    'default': {
+       'ENGINE': 'django.db.backends.sqlite3',
+       'NAME': BASE_DIR / 'db.sqlite3',
+   }
+}
 
 
 # Password validation
@@ -143,6 +144,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 #customised values
 AUTH_USER_MODEL = 'user.RegularUserModel'
+DJANGO_REST_PASSWORDRESET_EMAIL_FIELD = 'username'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
@@ -151,4 +153,15 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
     ]
 }
-SECURE_SSL_REDIRECT = True
+
+# settings.py
+# mydrfproject/settings.py
+
+# Email Backend Configuration
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'  # Replace with your preferred backend
+
+EMAIL_PORT = 587  # Replace with your email port
+EMAIL_USE_TLS = True  # Set to False if your email server doesn't use TLS
+EMAIL_HOST = 'smtp.gmail.com'  # Replace with your email host for gmail -> 'smtp.gmail.com'
+EMAIL_HOST_USER = 'mathlabtech11@gmail.com'  # Replace with your email username
+EMAIL_HOST_PASSWORD = 'Mathlabresearch@edutech'  # Replace with your email password

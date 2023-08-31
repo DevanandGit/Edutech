@@ -4,7 +4,7 @@ from .views import (FieldOfStudyListCreateView, FieldOfStudyRetrieveUpdateDestro
                     SubjectsRetrieveUpdateDestroyView, ModulesListCreateView,ModulesRetrieveUpdateDestroyView, 
                     AccessTypeListCreateView,AccessTypeRetrieveUpdateDestroyView,ExamsNestedView, ExamsNestedRetrieveUpdateDestroyView,
                     videosNestedView, VideosNestedRetrieveUpdateDestroyView, NotesNestedView, NotesNestedRetrieveUpdateDestroyView, PopularCourseRetrieveUpdateDestroyview,
-                    PopularCoursesAdd, SliderImageRetrieveUpdateDestroyView, SliderImageAdd, AssignCourses, AssignExam, ViewAllUsers, ViewUserDetial)
+                    PopularCoursesAdd, SliderImageRetrieveUpdateDestroyView, SliderImageAdd, AssignCourses, AssignExam, ViewAllUsers, ViewUserDetial, ChangePasswordView)
 from exam.views import (NumericalsListCreateView, NumericalsRetrieveUpdateDestroyView, MultipleChoiceListCreateView, MultipleChoiceRetrieveUpdateDestroyView,
                         MultiSelectListCreateView, MultiSelectRetrieveUpdateDestroyView, OptionsListCreateView, OptionsRetrieveUpdateDestroyView)
                         
@@ -51,7 +51,9 @@ urlpatterns = [
     path('assigncourse/', AssignCourses.as_view(), name='assigncourse'),
     path('assignexam/', AssignExam.as_view(), name='assignexam'),
     path('viewallusers/', ViewAllUsers.as_view(), name='viewallusers'),
-    path('viewallusers/<str:username>/', ViewUserDetial.as_view(), name='viewuserdetail')
+    path('viewallusers/<str:username>/', ViewUserDetial.as_view(), name='viewuserdetail'),
+    path('change_password/', ChangePasswordView.as_view(), name='change_password')
+    
 
 ]
 

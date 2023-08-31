@@ -23,6 +23,7 @@ urlpatterns = [
     path('users/', include('user.urls')),
     path('exam/', include('exam.urls')),
     path('applicationview/', include('regularuserview.urls')),
+    path('users/password_reset/', include('django_rest_passwordreset.urls', namespace='password_reset'))
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

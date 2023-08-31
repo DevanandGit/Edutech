@@ -8,14 +8,15 @@ from .serializers import (RegularUserSerializer,RegularUserLoginSerializer,
                         AdminLoginSerializer, AdminRegistrationSerializer,
                         Access_type_serializer,FieldOfStudySerializer,
                         ModuleSerializer,SubjectSerializer,
-                        VideoNestedSerializer, NotesNestedSerializer)
+                        VideoNestedSerializer, NotesNestedSerializer, ChangePasswordSerializer, ResetPasswordEmailSerializer)
 from regularuserview.models import UserProfile, PurchasedDate
 from regularuserview.serializer import DurationSerializer
 from .models import PopularCourses
 from .serializers import PopularCourseSerializer
+from django.contrib.auth import update_session_auth_hash
 from rest_framework.authtoken.models import Token
 from rest_framework.generics import (CreateAPIView, ListCreateAPIView, RetrieveUpdateDestroyAPIView,
-                                     ListAPIView,RetrieveUpdateDestroyAPIView)
+                                     ListAPIView,RetrieveUpdateDestroyAPIView, GenericAPIView)
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
@@ -304,13 +305,8 @@ class AssignExam(APIView):
             return Response("User not found", status=status.HTTP_404_NOT_FOUND)
         except Exam.DoesNotExist:
             return Response("Exam not found", status=status.HTTP_404_NOT_FOUND)
-<<<<<<< HEAD
-
-        duration = int(request.data.get('duration')) #duration in days        
-=======
                 
         duration = int(request.data.get('duration')) #duration in days
->>>>>>> origin
         
         date_of_purchase = timezone.now()
         expiration_date = date_of_purchase + timezone.timedelta(days=duration)
@@ -345,14 +341,9 @@ class AssignCourses(APIView):
             return Response("User not found", status=status.HTTP_404_NOT_FOUND)
         except FieldOfStudy.DoesNotExist:
             return Response("Course not found", status=status.HTTP_404_NOT_FOUND)
-<<<<<<< HEAD
-   
-        duration = int(request.data.get('duration')) #duration in days
-=======
                 
         duration = int(request.data.get('duration')) #duration in days
         
->>>>>>> origin
         date_of_purchase = timezone.now()
         expiration_date = date_of_purchase + timezone.timedelta(days=duration)
 
@@ -379,3 +370,23 @@ class ViewUserDetial(RetrieveUpdateDestroyAPIView):
     serializer_class = RegularUserSerializer
     queryset = RegularUserModel
     lookup_field = 'username'
+
+class ChangePasswordView(APIView):
+    serializer_class = ChangePasswordSerializer
+    def post(self, request):
+        serializer = ChangePasswordSerializer(data = request.data)
+        serializer.is_valid(raise_exception=True)
+
+        user = request.user
+        if user.check_password(serializer.data['old_password']):
+            user.set_password(serializer.data['new_password'])
+            user.save()
+            update_session_auth_hash(request, user)
+            return Response({'message': 'Password changed successfully.'}, status=status.HTTP_200_OK)
+        else:
+            return Response({'error': 'Incorrect old password.'}, status=status.HTTP_400_BAD_REQUEST)
+        
+# class RequestPasswordResetEmail(GenericAPIView):
+
+#     def post(self, request):
+#         pass
