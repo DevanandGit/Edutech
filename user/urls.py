@@ -3,11 +3,13 @@ from .views import RegularUserRegisterationView,RegularUserLoginView, RegularUse
 from .views import (FieldOfStudyListCreateView, FieldOfStudyRetrieveUpdateDestroyView, SubjectsListCreateView,
                     SubjectsRetrieveUpdateDestroyView, ModulesListCreateView,ModulesRetrieveUpdateDestroyView, 
                     AccessTypeListCreateView,AccessTypeRetrieveUpdateDestroyView,ExamsNestedView, ExamsNestedRetrieveUpdateDestroyView,
-                    videosNestedView, VideosNestedRetrieveUpdateDestroyView, NotesNestedView, NotesNestedRetrieveUpdateDestroyView, PopularCourseRetrieveUpdateDestroyview,
-                    PopularCoursesAdd, SliderImageRetrieveUpdateDestroyView, SliderImageAdd, AssignCourses, AssignExam, ViewAllUsers, ViewUserDetial, ChangePasswordView)
+                    videosNestedView, VideosNestedRetrieveUpdateDestroyView, NotesNestedView, NotesNestedRetrieveUpdateDestroyView, 
+                    PopularCourseRetrieveUpdateDestroyview, PopularCoursesAdd, SliderImageRetrieveUpdateDestroyView, SliderImageAdd, AssignCourses, 
+                    AssignExam, ViewAllUsers, ViewUserDetial, ChangePasswordView,  PasswordResetRequest, CheckOTP, ResetPasswordView)
 from exam.views import (NumericalsListCreateView, NumericalsRetrieveUpdateDestroyView, MultipleChoiceListCreateView, MultipleChoiceRetrieveUpdateDestroyView,
                         MultiSelectListCreateView, MultiSelectRetrieveUpdateDestroyView, OptionsListCreateView, OptionsRetrieveUpdateDestroyView)
-                        
+
+
 urlpatterns = [
     #urls for regular user.
     path('userRegistration/', RegularUserRegisterationView.as_view(), name='userregistration'),
@@ -43,7 +45,6 @@ urlpatterns = [
     path('fieldofstudy/<int:course_unique_id>/subjects/<int:subject_id>/modules/<int:modules_id>/exams/<int:exam_unique_id>/multiselect/<int:msq_id>/options/<int:option_id>/', OptionsRetrieveUpdateDestroyView.as_view(), name='exams-detail'),
     path('fieldofstudy/<int:course_unique_id>/subjects/<int:subject_id>/modules/<int:modules_id>/exams/<int:exam_unique_id>/numericals/', NumericalsListCreateView.as_view(), name='exams-detail'),
     path('fieldofstudy/<int:course_unique_id>/subjects/<int:subject_id>/modules/<int:modules_id>/exams/<int:exam_unique_id>/numericals/<int:nq_id>/', NumericalsRetrieveUpdateDestroyView.as_view(), name='exams-detail'),
-
     path('sliderimageadd/', SliderImageAdd.as_view(), name='sliderimageadd'),
     path('sliderimageadd/<int:images_id>', SliderImageRetrieveUpdateDestroyView.as_view(), name='sliderimageadd'),
     path('popularcourseadd/', PopularCoursesAdd.as_view(), name='popularcourseadd'),
@@ -52,7 +53,11 @@ urlpatterns = [
     path('assignexam/', AssignExam.as_view(), name='assignexam'),
     path('viewallusers/', ViewAllUsers.as_view(), name='viewallusers'),
     path('viewallusers/<str:username>/', ViewUserDetial.as_view(), name='viewuserdetail'),
-    path('change_password/', ChangePasswordView.as_view(), name='change_password')
+
+    path('change_password/', ChangePasswordView.as_view(), name='change_password'), 
+    path('otp-request/', PasswordResetRequest.as_view(), name='otp-request'),
+    path('check-otp/', CheckOTP.as_view()),
+    path('reset-password/', ResetPasswordView.as_view())
     
 
 ]

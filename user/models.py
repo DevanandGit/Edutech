@@ -16,6 +16,7 @@ phone_regex = RegexValidator(
 #         return super().get_queryset().filter(is_active=True)
 
 #select the field of studies from class FieldOfStudy.
+
 #Add Course instances.
 class FieldOfStudy(models.Model): #parent
     course_unique_id = models.AutoField(unique=True, primary_key=True)
@@ -48,7 +49,6 @@ class RegularUserModel(AbstractUser):
     username = models.EmailField(unique=True)
     phone_number = models.CharField(max_length=10, validators=[phone_regex])
     USERNAME_FIELD = 'username'
-    
 
 # #can add the all available teachers.
 # class Teachers(models.Model):
@@ -126,7 +126,8 @@ class Access_type(models.Model):
     
     def __str__(self):
         return f"{self.access_type}"
-    
+
+#model to add notes.
 class NotesNested(models.Model):
     notes_id = models.AutoField(primary_key=True, unique=True)
     module = models.ForeignKey(Modules, on_delete=models.CASCADE, related_name="notes") #Modules = parent of Notes
@@ -150,6 +151,7 @@ class NotesNested(models.Model):
     def __str__(self):
         return f"{self.title}"
     
+#models to add videos
 class videosNested(models.Model):
     video_unique_id = models.AutoField(primary_key=True, unique=True)
     module = models.ForeignKey(Modules, on_delete=models.CASCADE, related_name="videos") #Modules = parent of  video.
@@ -172,7 +174,8 @@ class videosNested(models.Model):
     
     def __str__(self):
         return f"{self.title}.{self.video_id}"
-    
+
+# models to add slider image
 class SliderImage(models.Model):
     images_id = models.AutoField(primary_key=True,unique=True)
     images = models.ImageField(upload_to='images/', null=True, blank=True)
@@ -185,6 +188,13 @@ class SliderImage(models.Model):
     def save(self, *args, **kwargs):
         return super().save(*args, **kwargs)
     
+# models to add popular course
 class PopularCourses(models.Model):
     popular_course_id = models.AutoField(unique=True, primary_key=True)
     course = models.ManyToManyField(FieldOfStudy,blank=True)
+
+# models to store otp
+class Otp(models.Model):
+    user = models.OneToOneField(RegularUserModel, on_delete=models.CASCADE)
+    otp = models.CharField(max_length=6, null=True, blank=True)
+    otp_validated = models.BooleanField(default=False, blank=True)

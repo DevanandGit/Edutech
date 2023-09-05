@@ -1,12 +1,12 @@
 from rest_framework import serializers
 from .models import RegularUserModel
 from django.contrib.auth import get_user_model
-from .models import (FieldOfStudy,
-                    Subjects, Modules, 
-                    Access_type, NotesNested, 
-                    videosNested, SliderImage, PopularCourses)
-from regularuserview.serializer import UserProfileSerializer, UserResponseSerializer
-# from regularuserview.serializer import PurchasedCourseSerializer
+from .models import (FieldOfStudy,Subjects, Modules, 
+                    Access_type, NotesNested, videosNested, 
+                    SliderImage, PopularCourses)
+from regularuserview.serializer import (UserProfileSerializer, UserResponseSerializer)
+
+
 RegularUserModel = get_user_model()
 
 #validate data of regular user Registration.
@@ -20,10 +20,9 @@ class RegularUserSerializer(serializers.ModelSerializer):
             'invalid': 'Password must contain at least 8 characters, including uppercase, lowercase, and numeric characters.'
         }
     )
+
     confirm_password = serializers.CharField(write_only=True)
-
     purchase_list = UserProfileSerializer(source='user_profile', read_only=True)  # Update the source here
-
     exam_response = UserResponseSerializer(read_only=True)
 
     class Meta:
@@ -158,20 +157,50 @@ class Access_type_serializer(serializers.ModelSerializer):
         model = Access_type
         fields = "__all__"
 
+#validates the uploading images
 class SliderImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = SliderImage
         fields = ['images_id','images']
 
+# validates the PopularCourses
 class PopularCourseSerializer(serializers.ModelSerializer):
     class Meta:
         model = PopularCourses
         fields = ['popular_course_id','course']
 
-
+# validates the password entered for changing password.
 class ChangePasswordSerializer(serializers.Serializer):
     old_password = serializers.CharField(required=True)
     new_password = serializers.CharField(required=True)
 
+#valildates the email entered for sending otp.
 class ResetPasswordEmailSerializer(serializers.Serializer):
     email = serializers.EmailField(required=True)
+    class Meta:
+        fields = ['email']
+
+# validates the password entered for changing password.
+class ResetPasswordSerializer(serializers.Serializer):
+    password = serializers.RegexField(
+        regex=r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$",
+        max_length=128,
+        min_length=8,
+        write_only=True,
+        error_messages={
+            'invalid': 'Password must contain at least 8 characters, including uppercase, lowercase, and numeric characters.'
+        }
+    )
+    confirm_password = serializers.CharField(write_only=True)
+
+    class Meta:
+        fields = ['password','confirm_password']
+
+    def validate(self, data):
+        if data['password'] != data['confirm_password']:
+            raise serializers.ValidationError('password mismatch')
+        return data
+        
+#validates if the otp entered is correct.
+class CheckOTPSerializer(serializers.Serializer):
+    otp = serializers.CharField(min_length = 6, max_length = 6)
