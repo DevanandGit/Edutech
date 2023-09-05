@@ -409,6 +409,7 @@ class ViewUserDetial(RetrieveUpdateDestroyAPIView):
 
 # view to change password by user
 class ChangePasswordView(APIView):
+    authentication_classes = [TokenAuthentication]
     serializer_class = ChangePasswordSerializer
     def post(self, request):
         serializer = ChangePasswordSerializer(data = request.data)
@@ -428,6 +429,7 @@ class ChangePasswordView(APIView):
 from django.db import transaction
 
 class PasswordResetRequest(GenericAPIView):
+    authentication_classes = [TokenAuthentication]
     serializer_class = ResetPasswordEmailSerializer
 
     def post(self, request):
@@ -469,6 +471,7 @@ class PasswordResetRequest(GenericAPIView):
 
 #view to validate OTP
 class CheckOTP(APIView):
+    authentication_classes = [TokenAuthentication]
     serializer_class = CheckOTPSerializer
 
     def post(self, request):
@@ -490,6 +493,7 @@ class CheckOTP(APIView):
 
 #View to reset password through OTP
 class ResetPasswordView(APIView):
+    authentication_classes = [TokenAuthentication]
     serializer_class = ResetPasswordSerializer
 
     def post(self, request):
@@ -511,8 +515,6 @@ class ResetPasswordView(APIView):
         else:
             return Response({'success':False, 'message':"verify OTP First"}, status=status.HTTP_400_BAD_REQUEST)
 
-
-#view to request new OTP
 
             
         
