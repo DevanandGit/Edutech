@@ -43,7 +43,6 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'exam.apps.ExamConfig',
     'regularuserview.apps.RegularuserviewConfig',
-    'django_rest_passwordreset',
 
 ]
 
