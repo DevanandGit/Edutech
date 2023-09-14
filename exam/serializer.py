@@ -26,7 +26,7 @@ class MultiSelectSerializer(serializers.ModelSerializer):
         model = MultiSelect
         fields = ['msq_id','question_no','question_type','exam_name','question','question_image','positive_marks','negetive_mark', 'options','solution_image','solution_text','slug_multiselect']
 
-##Validate Numerical question data
+#Validate Numerical question data
 class NumericalSerializer(serializers.ModelSerializer):
     class Meta:
         model = Numericals

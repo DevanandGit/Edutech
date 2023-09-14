@@ -173,6 +173,15 @@ class PopularCourseSerializer(serializers.ModelSerializer):
 class ChangePasswordSerializer(serializers.Serializer):
     old_password = serializers.CharField(required=True)
     new_password = serializers.CharField(required=True)
+    confirm_password = serializers.CharField(write_only=True)
+
+    class Meta:
+        fields = ['old_password','new_password', 'confirm_password']
+
+    def validate(self, data):
+        if data['new_password'] != data['confirm_password']:
+            raise serializers.ValidationError('Password mismatch')
+        return data
 
 #valildates the email entered for sending otp.
 class ResetPasswordEmailSerializer(serializers.Serializer):

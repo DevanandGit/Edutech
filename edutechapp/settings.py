@@ -24,9 +24,9 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: keep the secret key used in production secret!
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ["mathlabtech.com", "www.mathlabtech.com"]
 
 
 # Application definition
@@ -81,23 +81,23 @@ WSGI_APPLICATION = 'edutechapp.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-# DATABASES = {
-#      'default': {
-#          'ENGINE': 'django.db.backends.postgresql',
-#          'NAME': 'mathlab',
-#          'USER': 'mathlabadmin',
-#          'PASSWORD': 'mathlabResearch@29',
-#          'HOST': '154.62.108.108', #IP of vps.can be changed to local host after django hosted on vps.
-#          'PORT': '5432', #default port which postgres listening for connection is 5432.
-#      }
-#  }
-
 DATABASES = {
-    'default': {
-       'ENGINE': 'django.db.backends.sqlite3',
-       'NAME': BASE_DIR / 'db.sqlite3',
-   }
-}
+     'default': {
+         'ENGINE': 'django.db.backends.postgresql',
+         'NAME': 'mathlab',
+         'USER': 'mathlabadmin',
+         'PASSWORD': 'mathlabResearch@29',
+         'HOST': '154.62.108.108', #IP of vps.can be changed to local host after django hosted on vps.
+         'PORT': '5432', #default port which postgres listening for connection is 5432.
+     }
+ }
+
+# DATABASES = {
+#     'default': {
+#        'ENGINE': 'django.db.backends.sqlite3',
+#        'NAME': BASE_DIR / 'db.sqlite3',
+#    }
+# }
 
 
 # Password validation
@@ -132,7 +132,7 @@ USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/4.1/howto/static-files/
+# https://docs.djangoproject.com/en/4.1/howto/static-files/+
 STATIC_URL = 'static/'
 STATIC_ROOT = '/usr/local/lsws/Edutech/html/Edutech/public/static'
 MEDIA_URL = 'media/'
@@ -145,8 +145,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 #customised values
 AUTH_USER_MODEL = 'user.RegularUserModel'
 
-# DJANGO_REST_PASSWORDRESET_EMAIL_FIELD = 'username'
-
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.BasicAuthentication',
@@ -154,6 +152,7 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
     ]
 }
+SECURE_SSL_REDIRECT = True
 
 # settings.py
 # mydrfproject/settings.py
