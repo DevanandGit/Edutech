@@ -1,12 +1,11 @@
-from django.contrib.auth import authenticate, login, logout
 from django.contrib.sessions.models import Session
 from django.utils import timezone
 from django.contrib.auth import update_session_auth_hash
-
+from django.contrib.auth import authenticate, login, logout
 #import within app
 from .models import (Access_type,FieldOfStudy, Subjects, Modules,
                      videosNested, NotesNested, RegularUserModel,
-                     SliderImage, PopularCourses, Otp)
+                     SliderImage, PopularCourses, Otp, AbstractOtp)
 from .serializers import (RegularUserSerializer,RegularUserLoginSerializer,AdminLoginSerializer, 
                         AdminRegistrationSerializer,Access_type_serializer,FieldOfStudySerializer,
                         ModuleSerializer,SubjectSerializer,VideoNestedSerializer, 
@@ -26,11 +25,11 @@ from rest_framework.generics import (CreateAPIView, ListCreateAPIView, RetrieveU
                                      ListAPIView,RetrieveUpdateDestroyAPIView, GenericAPIView)
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAdminUser
 from rest_framework import status
-
+import pandas as pd
 
 import logging
 logger = logging.getLogger(__name__)
@@ -48,8 +47,6 @@ class RegularUserRegisterationView(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         try:
             user = serializer.save()
-            # Logging in the user after successful registration
-            login(request, user)
             # Generating or retrieving the token for the logged-in user
             token, created = Token.objects.get_or_create(user=user)
             response = {
@@ -60,6 +57,35 @@ class RegularUserRegisterationView(APIView):
             return Response(response, status=status.HTTP_201_CREATED)
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+#view to handle excel file for user registration.
+class UserRegistrationThroughExcel(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        file = request.FILES['file']
+        df = pd.read_excel(file)
+
+        success_users = []
+        errors = []
+
+        for index, row in df.iterrows():
+            serializer = RegularUserSerializer(data=row.to_dict())
+            if serializer.is_valid():
+                serializer.save()
+                success_users.append(serializer.data)
+            else:
+                errors.append({
+                    'row_number': index + 2,  # Excel rows are 1-indexed, Python is 0-indexed
+                    'errors': serializer.errors
+                })
+
+        if errors:
+            return Response({'errors': errors}, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response({'success_users': success_users}, status=status.HTTP_201_CREATED)
+
 
 
 #Regular User login view.
@@ -165,16 +191,16 @@ class AccessTypeRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
 
 #Course Overview view.
 class FieldOfStudyListCreateView(ListCreateAPIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAdminUser]
+    # authentication_classes = [TokenAuthentication]
+    # permission_classes = [IsAdminUser]
     queryset = FieldOfStudy.objects.prefetch_related('subjects')
     serializer_class = FieldOfStudySerializer
 
 
 #Course Detailview.
 class FieldOfStudyRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAdminUser]
+    # authentication_classes = [TokenAuthentication]
+    # permission_classes = [IsAdminUser]
     queryset = FieldOfStudy.objects.all()
     serializer_class = FieldOfStudySerializer
     lookup_field = "course_unique_id"
@@ -182,8 +208,8 @@ class FieldOfStudyRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
 
 #Subjects overview view.
 class SubjectsListCreateView(ListCreateAPIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAdminUser]
+    # authentication_classes = [TokenAuthentication]
+    # permission_classes = [IsAdminUser]
     serializer_class = SubjectSerializer
     lookup_field = "course_unique_id"
 
@@ -195,8 +221,8 @@ class SubjectsListCreateView(ListCreateAPIView):
 
 #Subjects Detailview View.
 class SubjectsRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAdminUser]
+    # authentication_classes = [TokenAuthentication]
+    # permission_classes = [IsAdminUser]
     queryset = Subjects.objects.all()
     serializer_class = SubjectSerializer
     lookup_field = "subject_id"
@@ -204,8 +230,8 @@ class SubjectsRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
 
 #Modules OverView View.
 class ModulesListCreateView(ListCreateAPIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAdminUser]
+    # authentication_classes = [TokenAuthentication]
+    # permission_classes = [IsAdminUser]
     serializer_class = ModuleSerializer
     lookup_field = "subject_id"
 
@@ -217,8 +243,8 @@ class ModulesListCreateView(ListCreateAPIView):
 
 #Modules Detailview view.
 class ModulesRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAdminUser]
+    # authentication_classes = [TokenAuthentication]
+    # permission_classes = [IsAdminUser]
     queryset = Modules.objects.all()
     serializer_class = ModuleSerializer
     lookup_field = "modules_id"
@@ -226,8 +252,8 @@ class ModulesRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
 
 #list and write exams
 class ExamsNestedView(ListCreateAPIView):
-    authentication_classes = [TokenAuthentication]
-    permisson_classes = [IsAdminUser]
+    # authentication_classes = [TokenAuthentication]
+    # permisson_classes = [IsAdminUser]
     serializer_class = ExamSerializer
     lookup_field = "modules_id"
 
@@ -239,8 +265,8 @@ class ExamsNestedView(ListCreateAPIView):
 
 #Exams inside Modules Detailview
 class ExamsNestedRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAdminUser]
+    # authentication_classes = [TokenAuthentication]
+    # permission_classes = [IsAdminUser]
     queryset = Exam.objects.all()
     serializer_class = ExamSerializer
     lookup_field = "exam_unique_id"
@@ -248,8 +274,8 @@ class ExamsNestedRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
 
 #list and write videos
 class videosNestedView(ListCreateAPIView):
-    authentication_classes = [TokenAuthentication]
-    permisson_classes = [IsAdminUser]
+    # authentication_classes = [TokenAuthentication]
+    # permisson_classes = [IsAdminUser]
     serializer_class = VideoNestedSerializer
     lookup_field = "modules_id"
 
@@ -261,8 +287,8 @@ class videosNestedView(ListCreateAPIView):
 
 #Videos inside Modules Detailview
 class VideosNestedRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAdminUser]
+    # authentication_classes = [TokenAuthentication]
+    # permission_classes = [IsAdminUser]
     queryset = videosNested.objects.all()
     serializer_class = VideoNestedSerializer
     lookup_field = "video_unique_id"
@@ -270,8 +296,8 @@ class VideosNestedRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
 
 #list and write notes
 class NotesNestedView(ListCreateAPIView):
-    authentication_classes = [TokenAuthentication]
-    permisson_classes = [IsAdminUser]
+    # authentication_classes = [TokenAuthentication]
+    # permisson_classes = [IsAdminUser]
     serializer_class = NotesNestedSerializer
     lookup_field = "modules_id"
 
@@ -283,38 +309,38 @@ class NotesNestedView(ListCreateAPIView):
 
 #Videos inside Modules Detailview
 class NotesNestedRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAdminUser]
+    # authentication_classes = [TokenAuthentication]
+    # permission_classes = [IsAdminUser]
     queryset = NotesNested.objects.all()
     serializer_class = NotesNestedSerializer
     lookup_field = "notes_id"
 
 
 class SliderImageAdd(ListCreateAPIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAdminUser]
+    # authentication_classes = [TokenAuthentication]
+    # permission_classes = [IsAdminUser]
     serializer_class = SliderImageSerializer
     queryset = SliderImage.objects.all()
     
     
 class SliderImageRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAdminUser]
+    # authentication_classes = [TokenAuthentication]
+    # permission_classes = [IsAdminUser]
     serializer_class = SliderImageSerializer
     queryset = SliderImage.objects.all()
     lookup_field = "images_id"
 
 
 class PopularCoursesAdd(ListCreateAPIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAdminUser]
+    # authentication_classes = [TokenAuthentication]
+    # permission_classes = [IsAdminUser]
     queryset = PopularCourses.objects.all()
     serializer_class = PopularCourseSerializer
 
 
 class PopularCourseRetrieveUpdateDestroyview(RetrieveUpdateDestroyAPIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAdminUser]
+    # authentication_classes = [TokenAuthentication]
+    # permission_classes = [IsAdminUser]
     serializer_class = PopularCourseSerializer
     queryset = PopularCourses.objects.all()
     lookup_field = "popular_course_id"
@@ -410,7 +436,7 @@ class ViewUserDetial(RetrieveUpdateDestroyAPIView):
 
 # view to change password by user
 class ChangePasswordView(APIView):
-    authentication_classes = [TokenAuthentication]
+    authentication_classes = [IsAuthenticated]
     serializer_class = ChangePasswordSerializer
     def post(self, request):
         serializer = ChangePasswordSerializer(data = request.data)
@@ -430,7 +456,6 @@ class ChangePasswordView(APIView):
 from django.db import transaction
 
 class PasswordResetRequest(GenericAPIView):
-    authentication_classes = [TokenAuthentication]
     serializer_class = ResetPasswordEmailSerializer
 
     def post(self, request):
@@ -443,23 +468,32 @@ class PasswordResetRequest(GenericAPIView):
         if user:
             with transaction.atomic():
                 otp_record, created = Otp.objects.get_or_create(user=user)
-
+                abstract_otp_record, created = AbstractOtp.objects.get_or_create(user = user)
                 if not created:
                     # An OTP record already exists, delete it and create a new one
                     otp_record.delete()
                     otp_record = Otp.objects.create(user=user)
 
                 otp = otpgenerator()
+                abstract_otp = otpgenerator()
+                # print(abstract_otp)
+                abstract_otp_record.abstract_otp = abstract_otp
+                abstract_otp_record.save()
                 otp_record.otp = otp
+                otp_record.otp_validated = False
                 otp_record.save()
 
-                email_body = 'Hello,\n This is the one-time-password for password reset of your account\n' + otp
-                data = {'email_body': email_body, 'to_email': user.username, 'email_subject': 'Reset your password'}
+                email_subject = 'Reset your password'
+                email_body = f"Hello,\n\nThis is your one-time password for resetting your account's password:\n\n**{otp}**\n\nUse this OTP within the next 30 minutes to complete the password reset process."
+
+                # email_body = 'Hello,\n This is the one-time-password for password reset of your account\n' + otp
+                data = {'email_body': email_body, 'to_email': user.username, 'email_subject': email_subject}
                 try:
                     Utils.send_email(data)
-
-                    return Response({'success': True, 'message': "OTP SENT SUCCESSFULLY"}, status=status.HTTP_200_OK)
-
+                    response = {'success': True,
+                                'message': "OTP SENT SUCCESSFULLY",
+                                'validation_id':abstract_otp}
+                    return Response(response, status=status.HTTP_200_OK)
                 except Exception as e:
                     logger.error(str(e))
                     return Response({'error': 'An error occurred while sending the email.'},
@@ -472,15 +506,20 @@ class PasswordResetRequest(GenericAPIView):
 
 #view to validate OTP
 class CheckOTP(APIView):
-    authentication_classes = [TokenAuthentication]
     serializer_class = CheckOTPSerializer
 
     def post(self, request):
         serializer = CheckOTPSerializer(data = request.data)
         serializer.is_valid(raise_exception = True)
 
-        otp = request.data['otp']
-        user = request.user
+        otp = self.request.query_params.get('otp')
+        abstract_otp = self.request.query_params.get('validation_id')
+        try:
+            abstract_otp = AbstractOtp.objects.get(abstract_otp = abstract_otp)
+            user = abstract_otp.user
+        except AbstractOtp.DoesNotExist:
+            return Response({"OTP validation Failed"}, status=status.HTTP_401_UNAUTHORIZED )
+        
         saved_otp = Otp.objects.get(user = user)
         
         if checkOTP(otp=otp, saved_otp_instance=saved_otp):
@@ -494,14 +533,35 @@ class CheckOTP(APIView):
 
 #View to reset password through OTP
 class ResetPasswordView(APIView):
-    authentication_classes = [TokenAuthentication]
     serializer_class = ResetPasswordSerializer
 
     def post(self, request):
         serializer = ResetPasswordSerializer(data = request.data)
         serializer.is_valid(raise_exception = True)
 
-        user = request.user
+        otp = self.request.query_params.get('otp')
+        abstract_otp = self.request.query_params.get('validation_id')
+
+        try:
+            abstract_otp = AbstractOtp.objects.get(abstract_otp = abstract_otp)
+            user = abstract_otp.user
+        except AbstractOtp.DoesNotExist:
+            return Response({"Unauthorised User. Can't Reset Password"}, status=status.HTTP_401_UNAUTHORIZED)
+
+        try:
+            otp = Otp.objects.get(user = user)
+        except Otp.DoesNotExist:
+            return Response({"Unauthorised User. Can't Reset Password"}, status=status.HTTP_401_UNAUTHORIZED)
+        
+        if otp.otp_validated == True:
+            pass
+        else:
+            response = {
+                "message": "OTP Not Validated"
+            }
+            return Response(response, status=status.HTTP_401_UNAUTHORIZED)
+        
+        user = RegularUserModel.objects.filter(username=user).first()
         otp_instance = Otp.objects.get(user = user)
 
         if otp_instance.otp_validated == True:

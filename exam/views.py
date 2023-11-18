@@ -29,15 +29,15 @@ class QuestionTypeRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
 
 #listview of Exams
 class ExamListCreateView(ListCreateAPIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAdminUser]
+    # authentication_classes = [TokenAuthentication]
+    # permission_classes = [IsAdminUser]
     queryset = Exam.objects.all()
     serializer_class = ExamSerializer
 
 #Detail view of Exams
 class ExamRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAdminUser]
+    # authentication_classes = [TokenAuthentication]
+    # permission_classes = [IsAdminUser]
     queryset = Exam.objects.all()
     serializer_class = ExamSerializer
     lookup_field = "exam_unique_id"
@@ -45,8 +45,8 @@ class ExamRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
 
 #listview for Numericals questions
 class NumericalsListCreateView(ListCreateAPIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAdminUser]
+    # authentication_classes = [TokenAuthentication]
+    # permission_classes = [IsAdminUser]
     queryset = Numericals.objects.all()
     serializer_class = NumericalSerializer
     lookup_field = 'exam_unique_id'
@@ -59,8 +59,8 @@ class NumericalsListCreateView(ListCreateAPIView):
 
 #Detail view of Numericals Questions
 class NumericalsRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAdminUser]
+    # authentication_classes = [TokenAuthentication]
+    # permission_classes = [IsAdminUser]
     queryset = Numericals.objects.all()
     serializer_class = NumericalSerializer
     lookup_field = "nq_id"
@@ -68,8 +68,8 @@ class NumericalsRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
 
 #listview for Multipletype questions
 class MultipleChoiceListCreateView(ListCreateAPIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAdminUser]
+    # authentication_classes = [TokenAuthentication]
+    # permission_classes = [IsAdminUser]
     queryset = MultipleChoice.objects.all()
     serializer_class = MultipleChoiceSerializer
     lookup_field = 'exam_unique_id'
@@ -82,16 +82,16 @@ class MultipleChoiceListCreateView(ListCreateAPIView):
 
 #Detail view of Multipletype questions
 class MultipleChoiceRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAdminUser]
+    # authentication_classes = [TokenAuthentication]
+    # permission_classes = [IsAdminUser]
     queryset = MultipleChoice.objects.all()
     serializer_class = MultipleChoiceSerializer
     lookup_field = "mcq_id"
 
 #listview for Multiselect questions
 class MultiSelectListCreateView(ListCreateAPIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAdminUser]
+    # authentication_classes = [TokenAuthentication]
+    # permission_classes = [IsAdminUser]
     queryset = MultiSelect.objects.all()
     serializer_class = MultiSelectSerializer
     lookup_field = 'exam_unique_id'
@@ -103,16 +103,16 @@ class MultiSelectListCreateView(ListCreateAPIView):
 
 #Detailview for Multiselect questions
 class MultiSelectRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAdminUser]
+    # authentication_classes = [TokenAuthentication]
+    # permission_classes = [IsAdminUser]
     queryset = MultiSelect.objects.all()
     serializer_class = MultiSelectSerializer
     lookup_field = "msq_id"
 
 #List view of options of multiselect questions.
 class OptionsListCreateView(ListCreateAPIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAdminUser]
+    # authentication_classes = [TokenAuthentication]
+    # permission_classes = [IsAdminUser]
     serializer_class = OptionSerializer
     lookup_field = "msq_id"
 
@@ -123,8 +123,8 @@ class OptionsListCreateView(ListCreateAPIView):
 
 #DetailView of options of multiselect Questions
 class OptionsRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAdminUser]
+    # authentication_classes = [TokenAuthentication]
+    # permission_classes = [IsAdminUser]
     queryset = Options.objects.all()
     serializer_class = OptionSerializer
     lookup_field = "option_id"

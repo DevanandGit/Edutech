@@ -27,7 +27,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 DEBUG = False
 
 ALLOWED_HOSTS = ["mathlabtech.com", "www.mathlabtech.com"]
-
+# ALLOWED_HOSTS = []
 
 # Application definition
 
@@ -81,6 +81,7 @@ WSGI_APPLICATION = 'edutechapp.wsgi.application'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 DATABASES = {
+    
      'default': {
          'ENGINE': 'django.db.backends.postgresql',
          'NAME': 'mathlab',
@@ -88,15 +89,13 @@ DATABASES = {
          'PASSWORD': 'mathlabResearch@29',
          'HOST': '154.62.108.108', #IP of vps.can be changed to local host after django hosted on vps.
          'PORT': '5432', #default port which postgres listening for connection is 5432.
-     }
- }
+     },
 
-# DATABASES = {
-#     'default': {
-#        'ENGINE': 'django.db.backends.sqlite3',
-#        'NAME': BASE_DIR / 'db.sqlite3',
-#    }
-# }
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': BASE_DIR / 'db.sqlite3',
+    # }  
+ }
 
 
 # Password validation

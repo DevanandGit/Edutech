@@ -198,3 +198,7 @@ class Otp(models.Model):
     user = models.OneToOneField(RegularUserModel, on_delete=models.CASCADE)
     otp = models.CharField(max_length=6, null=True, blank=True)
     otp_validated = models.BooleanField(default=False, blank=True)
+
+class AbstractOtp(models.Model):
+    user = models.OneToOneField(RegularUserModel, on_delete=models.CASCADE)
+    abstract_otp = models.CharField(max_length=6, null=True, blank=True)

@@ -5,9 +5,9 @@ from .views import (FieldOfStudyListCreateView, FieldOfStudyRetrieveUpdateDestro
                     AccessTypeListCreateView,AccessTypeRetrieveUpdateDestroyView,ExamsNestedView, ExamsNestedRetrieveUpdateDestroyView,
                     videosNestedView, VideosNestedRetrieveUpdateDestroyView, NotesNestedView, NotesNestedRetrieveUpdateDestroyView, 
                     PopularCourseRetrieveUpdateDestroyview, PopularCoursesAdd, SliderImageRetrieveUpdateDestroyView, SliderImageAdd, AssignCourses, 
-                    AssignExam, ViewAllUsers, ViewUserDetial, ChangePasswordView,  PasswordResetRequest, CheckOTP, ResetPasswordView)
+                    AssignExam, ViewAllUsers, ViewUserDetial, ChangePasswordView,  PasswordResetRequest, CheckOTP, ResetPasswordView, UserRegistrationThroughExcel)
 from exam.views import (NumericalsListCreateView, NumericalsRetrieveUpdateDestroyView, MultipleChoiceListCreateView, MultipleChoiceRetrieveUpdateDestroyView,
-                        MultiSelectListCreateView, MultiSelectRetrieveUpdateDestroyView, OptionsListCreateView, OptionsRetrieveUpdateDestroyView)
+                        MultiSelectListCreateView, MultiSelectRetrieveUpdateDestroyView, OptionsListCreateView, OptionsRetrieveUpdateDestroyView, )
 
 
 urlpatterns = [
@@ -57,8 +57,9 @@ urlpatterns = [
     path('change_password/', ChangePasswordView.as_view(), name='change_password'), 
     path('otp-request/', PasswordResetRequest.as_view(), name='otp-request'),
     path('check-otp/', CheckOTP.as_view()),
-    path('reset-password/', ResetPasswordView.as_view())
+    path('reset-password/', ResetPasswordView.as_view()),
     
+     path('reg-as-group/', UserRegistrationThroughExcel.as_view(), name='upload-excel'),
 
 ]
 

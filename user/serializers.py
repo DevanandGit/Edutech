@@ -8,7 +8,7 @@ from regularuserview.serializer import (UserProfileSerializer, UserResponseSeria
 
 
 RegularUserModel = get_user_model()
-
+# PopularCourses
 #validate data of regular user Registration.
 class RegularUserSerializer(serializers.ModelSerializer):
     password = serializers.RegexField(
