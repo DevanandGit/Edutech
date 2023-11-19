@@ -150,6 +150,7 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
     ]
 }
+
 SECURE_SSL_REDIRECT = True
 
 # settings.py
