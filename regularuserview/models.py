@@ -38,4 +38,4 @@ class UserResponse(models.Model):
     # "3": "B"
     # }
     def __str__(self) -> str:
-        return f"{self.userprofile.username}-{self.exam_id}"
+        return f"{self.user.username}-{self.exam_id}"

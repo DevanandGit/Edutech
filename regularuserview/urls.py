@@ -5,7 +5,7 @@ from .views import (CoursesList, CoursesRetrieveView,
                      UserProfileView, ExamsNestedDetailView, ExamsNestedListView,
                     VideosNestedDetailView, videosNestedListView, NotesNestedDetailView, 
                     NotesNestedListView,BuyCourse, ExamListView, ExamRetrieveView, BuyExam, UserExamResponseAdd,
-                    PopularCourseView, SliderImageView, PurchaseHistoryView)
+                    PopularCourseView, SliderImageView, PurchaseHistoryView, UserResponses)
 urlpatterns = [
     path('courses/', CoursesList.as_view(), name='courses'),
     path('courses/<int:course_unique_id>/', CoursesRetrieveView.as_view(), name='coursesretrieve'),
@@ -30,6 +30,7 @@ urlpatterns = [
     path('popularcourseview/', PopularCourseView.as_view(), name='popularcourseview'),
     # path('example/', Example.as_view(), name='example')
     # path('userlist/', Userlist.as_view(), name='userlist'),
-    path('userlist/<str:username>/purchase_history/', PurchaseHistoryView.as_view(), name='purchase_history')
+    path('userlist/<str:username>/purchase_history/', PurchaseHistoryView.as_view(), name='purchase_history'),
+    path('userresponses/', UserResponses.as_view(), name='userresponses')
 ]
 

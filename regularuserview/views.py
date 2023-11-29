@@ -14,11 +14,13 @@ from exam.serializer import ExamSerializer
 from .models import UserProfile,UserResponse, PurchasedDate
 from django.utils import timezone
 from django.shortcuts import get_object_or_404
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.response import Response
 from rest_framework import status
-
+from rest_framework.filters import SearchFilter
+from django.db.models import Q
+from rest_framework.pagination import LimitOffsetPagination
 #course List
 class CoursesList(ListAPIView):
     queryset = FieldOfStudy.objects.filter(is_active = True)
@@ -231,3 +233,25 @@ class PopularCourseView(ListAPIView):
     queryset = PopularCourses.objects.all()
 
 
+class UserResponses(ListAPIView):
+    # pagination_class = LimitOffsetPagination
+    # permission_classes = [IsAdminUser]
+    serializer_class = UserResponseSerializer
+    queryset = UserResponse.objects.all()
+    filter_backends = [SearchFilter]
+    search_fields = ['exam_id', 'user__username']
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        # Apply search filtering
+        search_query = self.request.query_params.get('search')
+        if search_query:
+            # Split the search query into individual words and create a Q object for each word
+            search_words = search_query.split()
+            search_filter = Q()
+            for word in search_words:
+                search_filter |= (Q(exam_id__icontains=word) | Q(user__username__icontains=word))
+                                  
+            queryset = queryset.filter(search_filter)
+
+        return queryset
