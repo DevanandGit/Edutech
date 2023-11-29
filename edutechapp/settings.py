@@ -153,7 +153,7 @@ REST_FRAMEWORK = {
     # 'PAGE_SIZE': 10,
 }
 
-SECURE_SSL_REDIRECT = True
+# SECURE_SSL_REDIRECT = True
 
 # settings.py
 # mydrfproject/settings.py

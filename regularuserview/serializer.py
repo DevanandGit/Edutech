@@ -41,7 +41,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
 class UserResponseSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserResponse
-        fields = ['exam_id','response','marks_scored']
+        fields = ['exam_id','exam_name','response','qualify_score','time_taken','marks_scored']
 
 class DurationSerializer(serializers.Serializer):
     duration = serializers.IntegerField(min_value = 1, help_text="Enter duration in Months")

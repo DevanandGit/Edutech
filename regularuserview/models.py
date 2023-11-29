@@ -30,7 +30,10 @@ class PurchasedDate(models.Model):
 class UserResponse(models.Model):
     user = models.ForeignKey(RegularUserModel, on_delete=models.CASCADE, related_name='userresponse')
     exam_id = models.CharField(max_length=50)
+    exam_name = models.TextField(default='test-1')
     response = models.JSONField(default=dict)
+    qualify_score = models.PositiveIntegerField(default=0)
+    time_taken = models.CharField(max_length=30, default="00:00:00")
     marks_scored = models.CharField(max_length=4, default='00')
     #  {
     # "1": "A",

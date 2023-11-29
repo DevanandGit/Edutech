@@ -239,7 +239,7 @@ class UserResponses(ListAPIView):
     serializer_class = UserResponseSerializer
     queryset = UserResponse.objects.all()
     filter_backends = [SearchFilter]
-    search_fields = ['exam_id', 'user__username']
+    search_fields = ['exam_id', 'exam_name','user__username']
 
     def get_queryset(self):
         queryset = super().get_queryset()
