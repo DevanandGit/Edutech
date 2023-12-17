@@ -5,7 +5,8 @@ from .views import (CoursesList, CoursesRetrieveView,
                      UserProfileView, ExamsNestedDetailView, ExamsNestedListView,
                     VideosNestedDetailView, videosNestedListView, NotesNestedDetailView, 
                     NotesNestedListView,BuyCourse, ExamListView, ExamRetrieveView, BuyExam, UserExamResponseAdd,
-                    PopularCourseView, SliderImageView, PurchaseHistoryView, UserResponses)
+                    PopularCourseView, SliderImageView, PurchaseHistoryView, UserResponses, CourseAdditionThroughExcel,
+                    ExamAdditionThroughExcel)
 urlpatterns = [
     path('courses/', CoursesList.as_view(), name='courses'),
     path('courses/<int:course_unique_id>/', CoursesRetrieveView.as_view(), name='coursesretrieve'),
@@ -31,6 +32,8 @@ urlpatterns = [
     # path('example/', Example.as_view(), name='example')
     # path('userlist/', Userlist.as_view(), name='userlist'),
     path('userlist/<str:username>/purchase_history/', PurchaseHistoryView.as_view(), name='purchase_history'),
-    path('userresponses/', UserResponses.as_view(), name='userresponses')
-]
+    path('userresponses/', UserResponses.as_view(), name='userresponses'),
 
+    path('course-add-excel/', CourseAdditionThroughExcel.as_view(), name='course-add-excel'),
+    path('exam-add-excel/', ExamAdditionThroughExcel.as_view(), name='exam-add-excel'),
+]

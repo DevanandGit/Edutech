@@ -370,13 +370,22 @@ class AssignExam(APIView):
         expiration_date = date_of_purchase + timezone.timedelta(days=duration)
 
         user_profile, created = UserProfile.objects.get_or_create(user = user)
-        user_profile.purchased_exams.add(exam)
 
-        purchased_date = PurchasedDate.objects.create(user_profile=user_profile,
-                                                      exam = exam, 
-                                                        date_of_purchase=timezone.now(),
-                                                        expiration_date = expiration_date)
-        purchased_date.save()
+        if exam not in user_profile.purchased_exams.all():
+            user_profile.purchased_exams.add(exam)
+
+        # Now, update or create the PurchasedDate record
+        purchased_date, created = PurchasedDate.objects.get_or_create(
+            user_profile=user_profile,
+            exam=exam,
+            defaults={'date_of_purchase': timezone.now(),
+                      'expiration_date': expiration_date}
+        )
+
+        # If the PurchasedDate record already exists, update the expiration date
+        if not created:
+            purchased_date.expiration_date = expiration_date
+            purchased_date.save()
 
         return Response("Exam purchased successfully", status=status.HTTP_200_OK)
 
@@ -407,12 +416,22 @@ class AssignCourses(APIView):
         expiration_date = date_of_purchase + timezone.timedelta(days=duration)
 
         user_profile, created = UserProfile.objects.get_or_create(user = user)
-        user_profile.purchased_courses.add(course)
 
-        purchased_date = PurchasedDate.objects.create(user_profile=user_profile, 
-                                                      course = course,
-                                                        date_of_purchase=timezone.now(),
-                                                        expiration_date = expiration_date)
+        if course not in user_profile.purchased_courses.all():
+            user_profile.purchased_courses.add(course)
+
+        # Now, update or create the PurchasedDate record
+        purchased_date, created = PurchasedDate.objects.get_or_create(
+            user_profile=user_profile,
+            course=course,
+            defaults={'date_of_purchase': timezone.now(),
+                      'expiration_date': expiration_date}
+        )
+
+        # If the PurchasedDate record already exists, update the expiration date
+        if not created:
+            purchased_date.expiration_date = expiration_date
+            purchased_date.save()
 
         return Response("Course purchased successfully", status=status.HTTP_200_OK)
 

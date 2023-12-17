@@ -21,6 +21,8 @@ from rest_framework import status
 from rest_framework.filters import SearchFilter
 from django.db.models import Q
 from rest_framework.pagination import LimitOffsetPagination
+import pandas as pd
+from datetime import datetime
 #course List
 class CoursesList(ListAPIView):
     queryset = FieldOfStudy.objects.filter(is_active = True)
@@ -234,7 +236,7 @@ class PopularCourseView(ListAPIView):
 
 
 class UserResponses(ListAPIView):
-    # pagination_class = LimitOffsetPagination
+    pagination_class = LimitOffsetPagination
     # permission_classes = [IsAdminUser]
     serializer_class = UserResponseSerializer
     queryset = UserResponse.objects.all()
@@ -255,3 +257,145 @@ class UserResponses(ListAPIView):
             queryset = queryset.filter(search_filter)
 
         return queryset
+
+
+#view to handle excel file for user registration.
+class CourseAdditionThroughExcel(APIView):
+    permission_classes = [IsAdminUser]
+
+    def post(self, request):
+        file = request.FILES['file']
+        df = pd.read_excel(file)
+
+        success_users = []
+        errors = []
+
+        for index, row in df.iterrows():
+            username = row['username']
+            course_id = row['course_id']
+            duration = row['duration'] #should be integer
+
+            try:
+                course = FieldOfStudy.objects.get(course_unique_id = course_id)
+                user = RegularUserModel.objects.get(username = username)
+            except RegularUserModel.DoesNotExist:
+                return Response("User not found", status=status.HTTP_404_NOT_FOUND)
+            except FieldOfStudy.DoesNotExist:
+                return Response("Course not found", status=status.HTTP_404_NOT_FOUND)
+            
+            duration = duration
+            date_of_purchase = timezone.now()
+            expiration_date = date_of_purchase + timezone.timedelta(days=duration)
+            user_profile, created = UserProfile.objects.get_or_create(user = user)
+
+            if course not in user_profile.purchased_courses.all():
+                user_profile.purchased_courses.add(course)
+
+            # Now, update or create the PurchasedDate record
+            purchased_date, created = PurchasedDate.objects.get_or_create(
+                user_profile=user_profile,
+                course=course,
+                defaults={'date_of_purchase': timezone.now(),
+                        'expiration_date': expiration_date}
+            )
+
+            # If the PurchasedDate record already exists, update the expiration date
+            if not created:
+                purchased_date.expiration_date = expiration_date
+                purchased_date.save()
+
+        return Response("Course purchased successfully", status=status.HTTP_200_OK)
+        
+
+
+#view to handle excel file for course addition
+class CourseAdditionThroughExcel(APIView):
+    permission_classes = [IsAdminUser]
+
+    def post(self, request):
+        file = request.FILES['file']
+        df = pd.read_excel(file)
+
+        success_users = []
+        errors = []
+
+        for index, row in df.iterrows():
+            username = row['username']
+            course_id = row['course_id']
+            duration = row['duration'] #should be integer
+
+            try:
+                course = FieldOfStudy.objects.get(course_unique_id = course_id)
+                user = RegularUserModel.objects.get(username = username)
+            except RegularUserModel.DoesNotExist:
+                return Response("User not found", status=status.HTTP_404_NOT_FOUND)
+            except FieldOfStudy.DoesNotExist:
+                return Response("Course not found", status=status.HTTP_404_NOT_FOUND)
+            
+            duration = duration
+            date_of_purchase = timezone.now()
+            expiration_date = date_of_purchase + timezone.timedelta(days=duration)
+            user_profile, created = UserProfile.objects.get_or_create(user = user)
+
+            if course not in user_profile.purchased_courses.all():
+                user_profile.purchased_courses.add(course)
+
+            # Now, update or create the PurchasedDate record
+            purchased_date, created = PurchasedDate.objects.get_or_create(
+                user_profile=user_profile,
+                course=course,
+                defaults={'date_of_purchase': timezone.now(),
+                        'expiration_date': expiration_date}
+            )
+
+            # If the PurchasedDate record already exists, update the expiration date
+            if not created:
+                purchased_date.expiration_date = expiration_date
+                purchased_date.save()
+
+        return Response("Course purchased successfully", status=status.HTTP_200_OK)
+    
+
+#view to handle excel file for exam addition
+class ExamAdditionThroughExcel(APIView):
+    permission_classes = [IsAdminUser]
+    def post(self, request):
+        file = request.FILES['file']
+        df = pd.read_excel(file)
+
+        for index, row in df.iterrows():
+            username = row['username']
+            exam_id = row['exam_id']
+            duration = row['duration'] #should be integer
+        
+        #get associated user and exam
+            try:
+                exam = Exam.objects.get(exam_unique_id = exam_id)
+                user = RegularUserModel.objects.get(username = username)
+            except RegularUserModel.DoesNotExist:
+                return Response("User not found", status=status.HTTP_404_NOT_FOUND)
+            except Exam.DoesNotExist:
+                return Response("Exam not found", status=status.HTTP_404_NOT_FOUND)
+              
+            date_of_purchase = timezone.now()
+            expiration_date = date_of_purchase + timezone.timedelta(days=duration)
+
+            user_profile, created = UserProfile.objects.get_or_create(user = user)
+
+            if exam not in user_profile.purchased_exams.all():
+                user_profile.purchased_exams.add(exam)
+
+            # Now, update or create the PurchasedDate record
+            purchased_date, created = PurchasedDate.objects.get_or_create(
+                user_profile=user_profile,
+                exam=exam,
+                defaults={'date_of_purchase': timezone.now(),
+                        'expiration_date': expiration_date}
+            )
+
+            # If the PurchasedDate record already exists, update the expiration date
+            if not created:
+                purchased_date.expiration_date = expiration_date
+                purchased_date.save()
+
+        return Response("Exam purchased successfully", status=status.HTTP_200_OK)
