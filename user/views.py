@@ -12,7 +12,6 @@ from .serializers import (RegularUserSerializer,RegularUserLoginSerializer,Admin
                         NotesNestedSerializer, ChangePasswordSerializer,ResetPasswordSerializer,
                         CheckOTPSerializer, ResetPasswordEmailSerializer, SliderImageSerializer,
                         PopularCourseSerializer)
-                        
 #import from other apps.
 from exam.serializer import ExamSerializer
 from exam.models import Exam

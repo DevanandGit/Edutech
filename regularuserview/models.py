@@ -34,7 +34,7 @@ class UserResponse(models.Model):
     response = models.JSONField(default=dict)
     qualify_score = models.PositiveIntegerField(default=0)
     time_taken = models.CharField(max_length=30, default="00:00:00")
-    marks_scored = models.CharField(max_length=4, default='00')
+    marks_scored = models.CharField(max_length=50, default='00')
     #  {
     # "1": "A",
     # "2": "C",
