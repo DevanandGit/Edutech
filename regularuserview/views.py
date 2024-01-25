@@ -305,57 +305,8 @@ class CourseAdditionThroughExcel(APIView):
                 purchased_date.save()
 
         return Response("Course purchased successfully", status=status.HTTP_200_OK)
-        
-
-
-#view to handle excel file for course addition
-class CourseAdditionThroughExcel(APIView):
-    permission_classes = [IsAdminUser]
-
-    def post(self, request):
-        file = request.FILES['file']
-        df = pd.read_excel(file)
-
-        success_users = []
-        errors = []
-
-        for index, row in df.iterrows():
-            username = row['username']
-            course_id = row['course_id']
-            duration = row['duration'] #should be integer
-
-            try:
-                course = FieldOfStudy.objects.get(course_unique_id = course_id)
-                user = RegularUserModel.objects.get(username = username)
-            except RegularUserModel.DoesNotExist:
-                return Response("User not found", status=status.HTTP_404_NOT_FOUND)
-            except FieldOfStudy.DoesNotExist:
-                return Response("Course not found", status=status.HTTP_404_NOT_FOUND)
-            
-            duration = duration
-            date_of_purchase = timezone.now()
-            expiration_date = date_of_purchase + timezone.timedelta(days=duration)
-            user_profile, created = UserProfile.objects.get_or_create(user = user)
-
-            if course not in user_profile.purchased_courses.all():
-                user_profile.purchased_courses.add(course)
-
-            # Now, update or create the PurchasedDate record
-            purchased_date, created = PurchasedDate.objects.get_or_create(
-                user_profile=user_profile,
-                course=course,
-                defaults={'date_of_purchase': timezone.now(),
-                        'expiration_date': expiration_date}
-            )
-
-            # If the PurchasedDate record already exists, update the expiration date
-            if not created:
-                purchased_date.expiration_date = expiration_date
-                purchased_date.save()
-
-        return Response("Course purchased successfully", status=status.HTTP_200_OK)
-    
-
+ 
+ 
 #view to handle excel file for exam addition
 class ExamAdditionThroughExcel(APIView):
     permission_classes = [IsAdminUser]
